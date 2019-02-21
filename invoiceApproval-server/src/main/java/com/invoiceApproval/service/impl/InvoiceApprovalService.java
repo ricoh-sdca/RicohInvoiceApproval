@@ -79,6 +79,15 @@ public class InvoiceApprovalService implements IInvoiceApprovalRuleService  {
 	public void delete(Integer id) throws Exception{
 		invoiceApprovalRuleDoa.delete(id);
 	}
+	
+	/**
+	 * This method is used to find Approval Rules based on OrgId
+	 * @param orgId
+	 */
+	@Override
+	public Iterable<InvoiceApprovalRule> findAllRulesByOrgId(Integer orgId) throws Exception {
+		return invoiceApprovalRuleDoa.findAllRulesByOrgId(orgId);
+	}
 
 	/**
 	 * This method is used to determine is provide set of rules are valid or not.

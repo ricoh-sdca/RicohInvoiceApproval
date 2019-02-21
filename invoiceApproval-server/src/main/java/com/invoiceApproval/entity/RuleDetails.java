@@ -33,5 +33,14 @@ public class RuleDetails {
 	public void setLevel(List<String> level) {
 		this.level = level;
 	}
-	
+	public RuleDetails(String currency, int fromAmt, int toAmt, List<String> level) {
+		super();
+		this.currency = currency;
+		this.fromAmt = fromAmt;
+		this.toAmt = toAmt;
+		this.level = level;
+	}
+	public RuleDetails() {
+		super();
+	}
 }

@@ -6,6 +6,8 @@ public interface IInvoiceApprovalRuleDoa {
 
 	public Iterable<InvoiceApprovalRule> findAllRules() throws Exception;
 	
+	public Iterable<InvoiceApprovalRule> findAllRulesByOrgId(Integer orgId) throws Exception;
+	
 	public InvoiceApprovalRule find(Integer id) throws Exception;
 	
 	public InvoiceApprovalRule create(InvoiceApprovalRule invoiceApprovalRule) throws Exception;
