@@ -14,9 +14,9 @@ import com.invoiceApproval.entity.RuleDetails;
 import com.invoiceApproval.service.IInvoiceApprovalRuleService;
 
 @Service
-public class InvoiceApprovalService implements IInvoiceApprovalRuleService  {
+public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  {
 
-	private static final Logger logger = LogManager.getLogger(InvoiceApprovalService.class);
+	private static final Logger logger = LogManager.getLogger(InvoiceApprovalRuleService.class);
 	
 	@Autowired
     private InvoiceApprovalRuleDoa invoiceApprovalRuleDoa;
