@@ -48,9 +48,11 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
      */
 	@Override
 	public InvoiceApprovalRule create(InvoiceApprovalRule invoiceApprovalRule) throws Exception{
+		logger.info("This is testing here.....");
 		if(isValidRule(invoiceApprovalRule)) {
 			return invoiceApprovalRuleDoa.create(invoiceApprovalRule);
 		}else {
+			logger.info("This is testing here.....returing NULL");
 			return null;
 		}
 	}
@@ -77,7 +79,12 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
      */
 	@Override
 	public void delete(Integer id) throws Exception{
-		invoiceApprovalRuleDoa.delete(id);
+		InvoiceApprovalRule obj = invoiceApprovalRuleDoa.find(id);
+		if(isAllInvoicesProcessed(obj.getOrgId())) {
+			invoiceApprovalRuleDoa.delete(id);
+		}else {
+			logger.error("Invoices still in Pending state. Cannot delete Rule");
+		}
 	}
 	
 	/**
