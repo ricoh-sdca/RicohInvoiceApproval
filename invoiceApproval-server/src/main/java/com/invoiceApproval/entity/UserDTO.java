@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 /**
  * @author atul_jadhav
@@ -19,15 +20,17 @@ public class UserDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@NotEmpty(message = "User name is a required field")
+	@NotEmpty(message="{username.notempty}")
+	@Size(max=50,message="{username.size}")
 	private String username;
     
-	@NotEmpty(message = "Password is a required field")
+	@NotEmpty(message="{password.notempty}")
+	@Size(max=50,message="{password.size}")
 	private String password;
     
 	private String name;
     
-	@Email
+	@Email(message="{user.email}")
 	private String email;
 	
     /**
