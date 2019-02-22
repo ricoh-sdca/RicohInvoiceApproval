@@ -19,64 +19,75 @@ public class UserDTO implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	@NotEmpty(message="{username.notempty}")
-	@Size(max=50,message="{username.size}")
+
+	@NotEmpty(message = "{username.notempty}")
+	@Size(max = 50, message = "{username.size}")
 	private String username;
-    
-	@NotEmpty(message="{password.notempty}")
-	@Size(max=50,message="{password.size}")
+
+	@NotEmpty(message = "{password.notempty}")
+	@Size(max = 50, message = "{password.size}")
 	private String password;
-    
+
 	private String name;
-    
-	@Email(message="{user.email}")
+
+	@Email(message = "{user.email}")
 	private String email;
-	
-    /**
+
+	/**
 	 * @return the username
 	 */
 	public String getUsername() {
 		return username;
 	}
+
 	/**
-	 * @param username the username to set
+	 * @param username
+	 *            the username to set
 	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
 	/**
 	 * @return the password
 	 */
 	public String getPassword() {
 		return password;
 	}
+
 	/**
-	 * @param password the password to set
+	 * @param password
+	 *            the password to set
 	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
+
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	/**
 	 * @return the email
 	 */
 	public String getEmail() {
 		return email;
 	}
+
 	/**
-	 * @param email the email to set
+	 * @param email
+	 *            the email to set
 	 */
 	public void setEmail(String email) {
 		this.email = email;
