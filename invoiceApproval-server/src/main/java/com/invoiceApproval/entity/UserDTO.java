@@ -30,7 +30,6 @@ public class UserDTO implements Serializable {
 
 	private String name;
 
-	@Email(message = "{user.email}")
 	private String email;
 
 	/**
