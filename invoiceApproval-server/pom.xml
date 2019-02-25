@@ -37,14 +37,25 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-security</artifactId>
 		</dependency> -->
-	<dependency>
-        <groupId>com.invoiceApproval</groupId>
-        <artifactId>invoiceApproval-web</artifactId>
-        <version>${project.version}</version>
-        <scope>runtime</scope>
-    </dependency>
+		<dependency>
+        	<groupId>org.springframework.boot</groupId>
+         	<artifactId>spring-boot-starter-thymeleaf</artifactId>
+      	</dependency>
+      	<!-- Automatic Restart and Hot Swapping -->
+	    <dependency>
+			<groupId>org.springframework.boot</groupId>
+		 	<artifactId>spring-boot-devtools</artifactId>
+		 	<optional>true</optional>
+		</dependency>
+		<!-- invoiceApproval-web -->
+		<dependency>
+	        <groupId>com.invoiceApproval</groupId>
+	        <artifactId>invoiceApproval-web</artifactId>
+	        <version>${project.version}</version>
+	        <scope>runtime</scope>
+	    </dependency>
+	    
 	</dependencies>
-	
 	<build>
         <plugins>
 			<plugin>

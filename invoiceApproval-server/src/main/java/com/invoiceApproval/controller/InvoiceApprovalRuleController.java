@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.invoiceApproval.Utils.Messages;
 import com.invoiceApproval.entity.InvoiceApprovalRule;
 import com.invoiceApproval.entity.ResponseVO;
 import com.invoiceApproval.service.impl.InvoiceApprovalRuleService;
@@ -26,6 +27,9 @@ public class InvoiceApprovalRuleController {
 	
 	private static final Logger logger = LogManager.getLogger(InvoiceApprovalRuleController.class);
 
+	@Autowired
+    private Messages messages;
+    
     @Autowired
     private InvoiceApprovalRuleService invoiceApprovalRuleService;
     
@@ -37,6 +41,7 @@ public class InvoiceApprovalRuleController {
     public Iterable<InvoiceApprovalRule> findAll() {
     	logger.info("Calling ");
     	try {
+    		logger.info(messages.get("this.is.sample.text"));
 			return invoiceApprovalRuleService.findAllRules();
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> findAll ",e.getCause());
