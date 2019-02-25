@@ -1,0 +1,105 @@
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        <li class="nav-item active">
+          <figure><img class="logo" src="../../assets/images/dashboard/ricoh-logo-6-fb-559-png.png"> </figure>
+        </li>
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <button class="btn btn-outline-default my-2 my-sm-0"><i class="fa fa-search" aria-hidden="true"></i></button>
+        <button class="btn btn-default" type="submit"> <a href="javascript:void(0)" (click)="logout()">Logout</a> </button>
+      </form>
+    </div>
+</nav>
+
+<div class="container">
+  <div class="header"> Dashboard </div>
+
+  <div class="invoice-summary">Invoice Summary
+    <span><img class="i-summary" src="../../assets/images/dashboard/icon 9.png"></span>
+  </div>
+
+  <hr>
+
+    <div class="row">
+      <div class="col ml-3">Total Invoice 
+        <p class="total-invoice"><img class="invoice-icon" src="../../assets/images/dashboard/Icon 1.png"></p></div>
+      
+        <div class="col ml-3">Total Invoice pending
+        <p class="pending-invoice"><img class="invoice-icon" src="../../assets/images/dashboard/Icon 2 .png"></p></div>
+      
+        <div class="col ml-3">total Invoice Approvals
+        <p class="approved-invoice"><img class="invoice-icon" src="../../assets/images/dashboard/icon 3.png"></p></div>
+   
+        <div class="col ml-3">Total Invoice Rejected
+        <p class="deleted-invoice"><img class="invoice-icon" src="../../assets/images/dashboard/Icon 4.png"></p></div>
+      </div>
+
+  <br>
+
+  <div class="rule-summary">Rules Summary
+    <span><img class="r-summary" src="../../assets/images/dashboard/icon 9.png"></span>
+  </div>
+
+  <hr>
+
+  <div class="content">
+    <span class="c-title">
+      <img class="rule" src="../../assets/images/dashboard/UXPinIconSet 8@2.png">Rules
+
+      <!-- <span><img src"../../assets/images/dashboard/UXPinIconSet 8@2.png"></span>
+      <span><img src"../../assets/images/dashboard/UXPinIconSet 8@2.png"></span>
+      <span><img src"../../assets/images/dashboard/UXPinIconSet 8@2.png"></span>
+      <span><img src"../../assets/images/dashboard/UXPinIconSet 8@2.png"></span> -->
+      <span> 
+        <i id="symbol" class="far fa-plus-square"></i>
+        <i id="symbol" class="fas fa-angle-down"></i>
+        <i id="symbol" class="fas fa-search"></i>
+        <i id="symbol" class="fas fa-arrows-alt"></i> 
+      </span>
+    </span>
+
+    <hr>
+
+    <div class="table-responsive{-sm|-md|-lg|-xl}">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Rule Id </th>
+            <th>Currency</th>
+            <th>Invoice Amount From</th>
+            <th>Invoice Amount To</th>
+            <th>Created On</th>
+            <th>Level of Approve</th>
+            <th>Action</th> 
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <!-- <td><i class="far fa-plus-square"></i></td>
+            <td><i class="fas fa-cog"></i></td> -->
+            <td>#0298BDC12RDC</td>
+            <td>US Doller($)</td>
+            <td>$1000</td>
+            <td>$1500</td>
+            <td>05/12/2019</td>
+            <td>Manager Level(#1)</td>
+            <td>
+              <span class="icon"><img class="eye" src="../../assets/images/dashboard/Icon 6.png"></span>
+              <span class="icon"><img class="pen" src="../../assets/images/dashboard/Icon 7.png"></span>
+              <span class="icon"><img class="delete" src="../../assets/images/dashboard/Icon 8.png"></span>
+            </td>
+          </tr>
+        <!-- <tr *ngFor="let record of invoice">
+          <td>{{record.id}}</td>
+          <td>{{record.title}}</td>
+          <td>{{record.body}}</td>
+        </tr>  -->
+        </tbody>
+      </table>
+   </div>
+</div>
+
+<!-- <button (click)="addRecords()">get data</button>
+<button (click)="getRecords()">get invoice</button> -->

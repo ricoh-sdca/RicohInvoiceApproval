@@ -1,0 +1,17 @@
+/* You can add global styles to this file, and also import other style files */
+nav{
+    width: 1366px;
+    height: 68px;
+    background-color: #ffffff;
+    background-size: cover;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+}
+img{
+    margin:35px 121px 18px 62px;
+    width: 90px;
+    height: 31px;
+}
+.container{
+    Width:1366px;
+    Height:768px;
+}

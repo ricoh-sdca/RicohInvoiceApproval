@@ -1,0 +1,31 @@
+
+.content{
+    width: 1133px;
+    height: 468px;
+    border: 1px solid #d7dfe3;
+    border-radius: 3px;
+    background-color: #ffffff;
+    background-size: cover;
+    box-shadow: 0px 0px 5px rgba(173,198,212,0.15);
+}
+.content title{
+    width: 300px;
+    height: 19px;
+    font-family: Roboto;
+    font-size: 16px;
+    color: #616161;
+    font-weight: 300;
+    text-decoration: none solid rgb(97, 97, 97);
+    text-decoration: underline;
+    text-decoration-style:dashed;
+}
+table{
+    width: 1133px;
+    border: 1px solid #d7dfe3;
+    table-layout: auto;
+    margin:auto;
+}
+table,tr,th{
+    border-collapse: collapse;
+    border-bottom: 1px solid grey;
+}
