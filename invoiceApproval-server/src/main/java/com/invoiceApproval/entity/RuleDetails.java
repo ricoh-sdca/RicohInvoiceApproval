@@ -1,5 +1,6 @@
 package com.invoiceApproval.entity;
 
+import java.util.Date;
 import java.util.List;
 
 public class RuleDetails {
@@ -8,6 +9,7 @@ public class RuleDetails {
 	public int fromAmt;
 	public int toAmt;
 	public List<String> level;
+	public Date updatedAt;
 	
 	public String getCurrency() {
 		return currency;
@@ -33,12 +35,21 @@ public class RuleDetails {
 	public void setLevel(List<String> level) {
 		this.level = level;
 	}
-	public RuleDetails(String currency, int fromAmt, int toAmt, List<String> level) {
+	
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+	
+	public RuleDetails(String currency, int fromAmt, int toAmt, List<String> level, Date updatedAt) {
 		super();
 		this.currency = currency;
 		this.fromAmt = fromAmt;
 		this.toAmt = toAmt;
 		this.level = level;
+		this.updatedAt = updatedAt;
 	}
 	public RuleDetails() {
 		super();

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.invoiceApproval.Utils.Messages;
@@ -22,7 +21,6 @@ import com.invoiceApproval.service.impl.InvoiceApprovalRuleService;
 import javassist.tools.web.BadHttpRequest;
 
 @RestController
-@RequestMapping(path = "/rules")
 public class InvoiceApprovalRuleController {
 	
 	private static final Logger logger = LogManager.getLogger(InvoiceApprovalRuleController.class);
@@ -37,7 +35,7 @@ public class InvoiceApprovalRuleController {
      * This method is used for fetching all RULES 
      * @return
      */
-    @GetMapping
+    @GetMapping(path="/rules")
     public Iterable<InvoiceApprovalRule> findAll() {
     	logger.info("Calling ");
     	try {
@@ -53,7 +51,7 @@ public class InvoiceApprovalRuleController {
      * This method is used for fetching all RULES based on orgId
      * @return
      */
-    @GetMapping(path = "/orgId/{orgId}")
+    @GetMapping(path="/rules/orgId/{orgId}")
     public Iterable<InvoiceApprovalRule> findAllRulesByOrgId(@PathVariable("orgId") Integer orgId) {
     	logger.info("Calling ");
     	try {
@@ -69,7 +67,7 @@ public class InvoiceApprovalRuleController {
      * @param id
      * @return
      */
-    @GetMapping(path = "/{id}")
+    @GetMapping(path="/rules/{id}")
     public InvoiceApprovalRule find(@PathVariable("id") Integer id) {
         try {
 			return invoiceApprovalRuleService.find(id);
@@ -84,7 +82,7 @@ public class InvoiceApprovalRuleController {
      * @param invoiceApprovalRule
      * @return
      */
-    @PostMapping(consumes = "application/json")
+    @PostMapping(path="/rules",consumes = "application/json")
     public ResponseVO create(@RequestBody InvoiceApprovalRule invoiceApprovalRule) {
     	ResponseVO responseVO = new ResponseVO();
     	try {
@@ -104,7 +102,7 @@ public class InvoiceApprovalRuleController {
      * @return
      * @throws BadHttpRequest
      */
-	@PutMapping(path = "/update/{id}")
+	@PutMapping(path="/rules/update/{id}",consumes = "application/json")
 	public InvoiceApprovalRule update(@PathVariable("id") Integer id,
 			@RequestBody InvoiceApprovalRule invoiceApprovalRule){
 		try {
@@ -119,7 +117,7 @@ public class InvoiceApprovalRuleController {
      * This method is used for deleting Rule based on Primary Key = ID
      * @param id
      */
-    @DeleteMapping(path = "/delete/{id}")
+    @DeleteMapping(path="/rules/delete/{id}")
     public void delete(@PathVariable("id") Integer id) {
     	try {
     		invoiceApprovalRuleService.delete(id);

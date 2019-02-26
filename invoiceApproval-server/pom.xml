@@ -9,44 +9,64 @@
   <packaging>war</packaging>
   
   <dependencies>
-    <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-rest</artifactId>
-		</dependency>
-		<dependency>
+  		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- Spring Security -->
+		<!-- <dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-security</artifactId>
+		</dependency> -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-integration</artifactId>
+        </dependency>
+        <!-- REST  -->
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+		<!-- JPA -->
+    	<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<!-- MySql -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<!-- Spring Security -->
-		<!-- <dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-security</artifactId>
-		</dependency> -->
+		<!-- Localization -->		
 		<dependency>
         	<groupId>org.springframework.boot</groupId>
          	<artifactId>spring-boot-starter-thymeleaf</artifactId>
       	</dependency>
       	<!-- Automatic Restart and Hot Swapping -->
-	    <dependency>
+	    <!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
 		 	<artifactId>spring-boot-devtools</artifactId>
 		 	<optional>true</optional>
-		</dependency>
+		</dependency> -->
 		<!-- invoiceApproval-web -->
 		<dependency>
 	        <groupId>com.invoiceApproval</groupId>
@@ -69,7 +89,7 @@
 			              <outputDirectory>${project.build.directory}/classes/resources/</outputDirectory >
 			              <resources>
 			                  <resource>
-			                      <directory>${project.parent.basedir}/invoiceApproval-web/src/main/web/dist/np-app/</directory >
+			                      <directory>${project.parent.basedir}/invoiceApproval-web/src/main/web/dist/Invoice/</directory >
 			                  </resource>
 			              </resources>
 			          </configuration>

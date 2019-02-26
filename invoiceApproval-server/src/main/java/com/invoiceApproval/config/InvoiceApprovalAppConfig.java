@@ -8,7 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
@@ -54,4 +57,14 @@ public class InvoiceApprovalAppConfig {
     public void addInterceptors(InterceptorRegistry registry){
         registry.addInterceptor(localeChangeInterceptor());
     }
+    
+	/*@Bean
+    public WebMvcConfigurationSupport corsConfigurer() {
+       return new WebMvcConfigurationSupport() {
+          @Override
+          public void addCorsMappings(CorsRegistry registry) {
+             registry.addMapping("/rules").allowedOrigins("http://localhost:8080");
+          }
+       };
+    }*/
 }

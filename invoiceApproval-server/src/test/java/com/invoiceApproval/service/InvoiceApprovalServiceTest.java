@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -66,10 +67,10 @@ public class InvoiceApprovalServiceTest {
 	 */
 	public List<RuleDetails> getRuleDetailsList(){
 		List<RuleDetails> list = new ArrayList<RuleDetails>();
-		list.add(new RuleDetails("dollor", 0, 100, getLevel("1")));
-		list.add(new RuleDetails("dollor", 100, 1000, getLevel("2")));
-		list.add(new RuleDetails("dollor", 1000, 10000, getLevel("3")));
-		list.add(new RuleDetails("dollor", 10000, 100000, getLevel("4")));
+		list.add(new RuleDetails("dollor", 0, 100, getLevel("1"),new Date()));
+		list.add(new RuleDetails("dollor", 100, 1000, getLevel("2"),new Date()));
+		list.add(new RuleDetails("dollor", 1000, 10000, getLevel("3"),new Date()));
+		list.add(new RuleDetails("dollor", 10000, 100000, getLevel("4"),new Date()));
 		return list;
 	}
 	
@@ -79,10 +80,10 @@ public class InvoiceApprovalServiceTest {
 	 */
 	public List<RuleDetails> getRuleDetailsList_IncorrectRule(){
 		List<RuleDetails> list = new ArrayList<RuleDetails>();
-		list.add(new RuleDetails("dollor", 0, 100, getLevel("1")));
-		list.add(new RuleDetails("dollor", 200, 1000, getLevel("2")));
-		list.add(new RuleDetails("dollor", 1000, 10000, getLevel("3")));
-		list.add(new RuleDetails("dollor", 10000, 100000, getLevel("4")));
+		list.add(new RuleDetails("dollor", 0, 100, getLevel("1"),new Date()));
+		list.add(new RuleDetails("dollor", 200, 1000, getLevel("2"),new Date()));
+		list.add(new RuleDetails("dollor", 1000, 10000, getLevel("3"),new Date()));
+		list.add(new RuleDetails("dollor", 10000, 100000, getLevel("4"),new Date()));
 		return list;
 	}
 	

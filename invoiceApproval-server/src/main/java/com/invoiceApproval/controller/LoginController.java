@@ -18,7 +18,7 @@ import com.invoiceApproval.service.ILoginService;
  * @author atul_jadhav
  *
  */
-@RestController(value="/login")
+@RestController
 public class LoginController {
 
 	private static final Logger LOGGER = LogManager.getLogger(LoginController.class);
@@ -32,7 +32,7 @@ public class LoginController {
 	 * @param userDTO
 	 * @return success/failure message 
 	 */
-	@PostMapping
+	@PostMapping(path="/login")
 	public ResponseVO login(@Valid @RequestBody UserDTO userDTO) {
 		
 		LOGGER.info("Enter LoginController login()");
