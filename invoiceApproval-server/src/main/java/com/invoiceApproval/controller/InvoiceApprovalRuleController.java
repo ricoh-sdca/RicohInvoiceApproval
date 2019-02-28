@@ -1,4 +1,6 @@
 package com.invoiceApproval.controller;
+import java.util.List;
+
 /**
  * This class is used for Invoice Approval Rule REST API
  */
@@ -14,12 +16,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.invoiceApproval.Utils.Messages;
-import com.invoiceApproval.entity.InvoiceApprovalRule;
+import com.invoiceApproval.entity.InvoiceRule;
 import com.invoiceApproval.entity.ResponseVO;
 import com.invoiceApproval.service.impl.InvoiceApprovalRuleService;
 
 import javassist.tools.web.BadHttpRequest;
 
+/**
+ * This class represent invoice approval rule rest resource method. 
+ */
 @RestController
 public class InvoiceApprovalRuleController {
 	
@@ -35,8 +40,8 @@ public class InvoiceApprovalRuleController {
      * This method is used for fetching all RULES 
      * @return
      */
-    @GetMapping(path="/rules")
-    public Iterable<InvoiceApprovalRule> findAll() {
+    @GetMapping(path="/rules",produces="application/json")
+    public List<InvoiceRule> findAll() {
     	logger.info("Calling ");
     	try {
     		logger.info(messages.get("this.is.sample.text"));
@@ -52,7 +57,7 @@ public class InvoiceApprovalRuleController {
      * @return
      */
     @GetMapping(path="/rules/orgId/{orgId}")
-    public Iterable<InvoiceApprovalRule> findAllRulesByOrgId(@PathVariable("orgId") Integer orgId) {
+    public Iterable<InvoiceRule> findAllRulesByOrgId(@PathVariable("orgId") Integer orgId) {
     	logger.info("Calling ");
     	try {
 			return invoiceApprovalRuleService.findAllRulesByOrgId(orgId);
@@ -68,7 +73,7 @@ public class InvoiceApprovalRuleController {
      * @return
      */
     @GetMapping(path="/rules/{id}")
-    public InvoiceApprovalRule find(@PathVariable("id") Integer id) {
+    public InvoiceRule find(@PathVariable("id") Integer id) {
         try {
 			return invoiceApprovalRuleService.find(id);
 		} catch (Exception e) {
@@ -83,13 +88,13 @@ public class InvoiceApprovalRuleController {
      * @return
      */
     @PostMapping(path="/rules",consumes = "application/json")
-    public ResponseVO create(@RequestBody InvoiceApprovalRule invoiceApprovalRule) {
+    public ResponseVO create(@RequestBody InvoiceRule invoiceApprovalRule) {
     	ResponseVO responseVO = new ResponseVO();
     	try {
     		invoiceApprovalRuleService.create(invoiceApprovalRule);
 			responseVO.setMessage("Rule is successfully added");
 		} catch (Exception e) {
-			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> create ",e.getCause());
+			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> create ",e);
 			responseVO.setErrorMessage("An error occurred during execution of REST call. Refer to application logs for more details.");
 		}
     	return responseVO;
@@ -103,8 +108,8 @@ public class InvoiceApprovalRuleController {
      * @throws BadHttpRequest
      */
 	@PutMapping(path="/rules/update/{id}",consumes = "application/json")
-	public InvoiceApprovalRule update(@PathVariable("id") Integer id,
-			@RequestBody InvoiceApprovalRule invoiceApprovalRule){
+	public InvoiceRule update(@PathVariable("id") Integer id,
+			@RequestBody InvoiceRule invoiceApprovalRule){
 		try {
 			invoiceApprovalRuleService.update(id, invoiceApprovalRule);
 		} catch (Exception e) {

@@ -16,7 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.invoiceApproval.doa.impl.InvoiceApprovalRuleDoa;
-import com.invoiceApproval.entity.InvoiceApprovalRule;
+import com.invoiceApproval.entity.InvoiceRule;
 import com.invoiceApproval.entity.Rule;
 import com.invoiceApproval.entity.RuleDetails;
 import com.invoiceApproval.service.impl.InvoiceApprovalRuleService;
@@ -40,10 +40,10 @@ public class InvoiceApprovalServiceTest {
 	 * @param rule
 	 * @return
 	 */
-	public InvoiceApprovalRule getInvoiceApprovalRule(Integer id,Integer orgId,String ruleStatus, Rule rule) {
-		InvoiceApprovalRule invoiceApprovalRule = new InvoiceApprovalRule();
+	public InvoiceRule getInvoiceApprovalRule(Integer id,Integer orgId,String ruleStatus, Rule rule) {
+		InvoiceRule invoiceApprovalRule = new InvoiceRule();
 		invoiceApprovalRule.setId(1);
-		invoiceApprovalRule.setOrgId(1);
+		//invoiceApprovalRule.setOrgId(1);
 		invoiceApprovalRule.setRuleStatus("active");
 		invoiceApprovalRule.setRule(rule);
 		return invoiceApprovalRule;
@@ -102,8 +102,8 @@ public class InvoiceApprovalServiceTest {
 	 * Test data
 	 * @return
 	 */
-	public Iterable<InvoiceApprovalRule> getMockInvoiceApprovalRuleList(){
-		List<InvoiceApprovalRule> list = new ArrayList<InvoiceApprovalRule>();
+	public List<InvoiceRule> getMockInvoiceApprovalRuleList(){
+		List<InvoiceRule> list = new ArrayList<InvoiceRule>();
 		list.add(getInvoiceApprovalRule(1, 1, "active", getRule(getRuleDetailsList())));
 		list.add(getInvoiceApprovalRule(2, 1, "active", getRule(getRuleDetailsList())));
 		list.add(getInvoiceApprovalRule(3, 1, "active", getRule(getRuleDetailsList())));
@@ -113,57 +113,57 @@ public class InvoiceApprovalServiceTest {
 	@Test
 	public void findAll_test() throws Exception {
 		Mockito.when(invoiceApprovalRuleService.findAllRules()).thenReturn(getMockInvoiceApprovalRuleList());
-		Iterable<InvoiceApprovalRule> iterable = invoiceApprovalRuleService.findAllRules();
+		List<InvoiceRule> iterable = invoiceApprovalRuleService.findAllRules();
 		assertNotNull("list retrived successfully", iterable);
 	}
 	
 	@Test
 	public void find_test() throws Exception {
 		Mockito.when(invoiceApprovalRuleService.find(1)).thenReturn(getInvoiceApprovalRule(1, 1, "active", getRule(getRuleDetailsList())));
-		InvoiceApprovalRule iterable = invoiceApprovalRuleService.find(1);
+		InvoiceRule iterable = invoiceApprovalRuleService.find(1);
 		assertNotNull("list retrived successfully", iterable);
 	}
 	
 	@Test
 	public void findAllRulesByOrgId_test() throws Exception {
 		Mockito.when(invoiceApprovalRuleService.findAllRulesByOrgId(1)).thenReturn(getMockInvoiceApprovalRuleList());
-		Iterable<InvoiceApprovalRule> iterable = invoiceApprovalRuleService.findAllRulesByOrgId(1);
+		Iterable<InvoiceRule> iterable = invoiceApprovalRuleService.findAllRulesByOrgId(1);
 		assertNotNull("list retrived successfully", iterable);
 	}
 	
 	@Test
 	public void create_test() throws Exception{
-		InvoiceApprovalRule invoiceApprovalRuleObj = getInvoiceApprovalRule(1, 1, "active", getRule(getRuleDetailsList()));
+		InvoiceRule invoiceApprovalRuleObj = getInvoiceApprovalRule(1, 1, "active", getRule(getRuleDetailsList()));
 		Mockito.when(invoiceApprovalRuleService.create(invoiceApprovalRuleObj)).thenReturn(invoiceApprovalRuleObj);
-		InvoiceApprovalRule invoiceApprovalRule = invoiceApprovalRuleService.create(invoiceApprovalRuleObj);
+		InvoiceRule invoiceApprovalRule = invoiceApprovalRuleService.create(invoiceApprovalRuleObj);
 		assertNotNull("Invoice Rule is successfully created", invoiceApprovalRule);
 	}
 	
 	@Test
 	public void create_negative_test() throws Exception{
-		InvoiceApprovalRule invoiceApprovalRuleObj = getInvoiceApprovalRule(1, 1, "active", getRule(getRuleDetailsList_IncorrectRule()));
-		InvoiceApprovalRule invoiceApprovalRule = invoiceApprovalRuleService.create(invoiceApprovalRuleObj);
+		InvoiceRule invoiceApprovalRuleObj = getInvoiceApprovalRule(1, 1, "active", getRule(getRuleDetailsList_IncorrectRule()));
+		InvoiceRule invoiceApprovalRule = invoiceApprovalRuleService.create(invoiceApprovalRuleObj);
 		assertNull("Incorrect Rule", invoiceApprovalRule);
 	}
 	
 	@Test
 	public void update_test() throws Exception{
-		InvoiceApprovalRule invoiceApprovalRuleObj = getInvoiceApprovalRule(1, 1, "active", getRule(getRuleDetailsList()));
+		InvoiceRule invoiceApprovalRuleObj = getInvoiceApprovalRule(1, 1, "active", getRule(getRuleDetailsList()));
 		Mockito.when(invoiceApprovalRuleService.update(1, invoiceApprovalRuleObj)).thenReturn(invoiceApprovalRuleObj);
-		InvoiceApprovalRule invoiceApprovalRule = invoiceApprovalRuleService.update(1, invoiceApprovalRuleObj);
+		InvoiceRule invoiceApprovalRule = invoiceApprovalRuleService.update(1, invoiceApprovalRuleObj);
 		assertNotNull("Invoice Rule is successfully updated", invoiceApprovalRule);
 	}
 	
 	@Test
 	public void update_negative_test() throws Exception{
-		InvoiceApprovalRule invoiceApprovalRuleObj = getInvoiceApprovalRule(1, 1, "active", getRule(getRuleDetailsList_IncorrectRule()));
-		InvoiceApprovalRule invoiceApprovalRule = invoiceApprovalRuleService.update(1, invoiceApprovalRuleObj);
+		InvoiceRule invoiceApprovalRuleObj = getInvoiceApprovalRule(1, 1, "active", getRule(getRuleDetailsList_IncorrectRule()));
+		InvoiceRule invoiceApprovalRule = invoiceApprovalRuleService.update(1, invoiceApprovalRuleObj);
 		assertNull("Incorrect Rule", invoiceApprovalRule);
 	}
 	
 	@Test
 	public void delete_test() throws Exception{
-		InvoiceApprovalRule invoiceApprovalRuleObj = getInvoiceApprovalRule(1, 1, "active", getRule(getRuleDetailsList()));
+		InvoiceRule invoiceApprovalRuleObj = getInvoiceApprovalRule(1, 1, "active", getRule(getRuleDetailsList()));
 		Mockito.when(invoiceApprovalRuleDoa.find(1)).thenReturn(invoiceApprovalRuleObj);
 		invoiceApprovalRuleService.delete(1);
 		assertNotNull("Incorrect Rule");

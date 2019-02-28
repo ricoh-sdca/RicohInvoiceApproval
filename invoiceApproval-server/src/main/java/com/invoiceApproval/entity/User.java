@@ -1,84 +1,149 @@
 package com.invoiceApproval.entity;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="user_tbl")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
-    
-    @Column
-    private String username;
-    
-    @Column
-    private String password;
-    
-    @Column
-    private String name;
-    
-    @Column
-    private String email;
-
-    @Column(name="isactive")
-    private String isActive;
-    
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+public class User implements Serializable {
 
     /**
-	 * @return the isActive
+	 * 
 	 */
-	public String getIsActive() {
-		return isActive;
-	}
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * @param isActive the isActive to set
-	 */
-	public void setIsActive(String isActive) {
-		this.isActive = isActive;
+	@Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Integer id;
+    
+	@Column(name="first_name")
+    private String firstName;
+	
+	@Column(name="last_name")
+    private String lastName;
+    
+	@Column(name="username")
+	private String userName;
+	
+	@Column(name="password")
+    private String password;
+	
+	@Column(name="email_id")
+    private String emailId;
+	
+	@Column(name="approval_level")
+    private String approvalLevel;
+	
+	@Column(name="user_status")
+    private String userStatus;
+	
+	@Column(name="created_by")
+    private String createdBy;
+	
+	@Column(name="created_at")
+	@Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+    
+	@Column(name="updated_by")
+	private String updatedBy;
+    
+	@Column(name="updated_at")
+	@Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+	
+	@ManyToOne
+	@JoinColumn(name="org_id")
+    private Organization organization;
+    
+    
+	public Integer getId() {
+		return id;
 	}
-
-	@Override
-    public String toString() {
-        return "User{" + "username='" + username + '\'' + ", password='" + password + '\'' + ", name='" + name + '\''
-                + ", email='" + email + '\'' + '}';
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getEmailId() {
+		return emailId;
+	}
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+	public String getApprovalLevel() {
+		return approvalLevel;
+	}
+	public void setApprovalLevel(String approvalLevel) {
+		this.approvalLevel = approvalLevel;
+	}
+	public String getUserStatus() {
+		return userStatus;
+	}
+	public void setUserStatus(String userStatus) {
+		this.userStatus = userStatus;
+	}
+	public String getCreatedBy() {
+		return createdBy;
+	}
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+	public Organization getOrganization() {
+		return organization;
+	}
+	public void setOrganization(Organization organization) {
+		this.organization = organization;
+	}
+    
 }

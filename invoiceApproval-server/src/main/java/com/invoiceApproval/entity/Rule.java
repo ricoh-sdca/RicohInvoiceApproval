@@ -20,7 +20,5 @@ public class Rule {
 		this.ruleDetails = ruleDetails;
 	}
 	
-	
-	
 }
 

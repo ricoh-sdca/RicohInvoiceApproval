@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.invoiceApproval.doa.ILoginDAO;
+import com.invoiceApproval.exception.InvoiceApprovalException;
 import com.invoiceApproval.service.ILoginService;
 
 @Service
@@ -17,14 +18,15 @@ public class LoginService implements ILoginService  {
 	private ILoginDAO loginDao;
 	
 	/**
-	 * Check if user is valid or not by comparing username and password
+	 * This method checks if user is valid or not by comparing credentials with database.
+	 * @return boolean
+	 * @param userName,password
+	 * @throws InvoiceApprovalException 
 	 */
 	@Override
-	public boolean validateUser(String userName, String password) {
+	public boolean validateUser(String userName, String password) throws InvoiceApprovalException{
 		logger.info("Enter LoginService validateUser()");
 		return loginDao.validateUser(userName, password);
-		
 	}
-	
 	
 }

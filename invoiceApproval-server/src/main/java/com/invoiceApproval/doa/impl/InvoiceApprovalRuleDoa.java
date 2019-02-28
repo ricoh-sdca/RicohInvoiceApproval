@@ -1,5 +1,6 @@
 package com.invoiceApproval.doa.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,8 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.invoiceApproval.doa.IInvoiceApprovalRuleDoa;
-import com.invoiceApproval.entity.InvoiceApprovalRule;
+import com.invoiceApproval.entity.InvoiceRule;
 import com.invoiceApproval.repository.InvoiceApprovalRuleRepository;
+import com.invoiceApproval.repository.OrganizationRepository;
 
 import javassist.tools.web.BadHttpRequest;
 
@@ -29,8 +31,14 @@ public class InvoiceApprovalRuleDoa implements IInvoiceApprovalRuleDoa {
 	@Autowired
     private InvoiceApprovalRuleRepository repository;
 	
+	@Autowired
+	private OrganizationRepository orgRepo;
+	
+	/**
+	 * This method is use to get all rules of an organization.
+	 */
 	@Override
-	public Iterable<InvoiceApprovalRule> findAllRules() throws Exception {
+	public List<InvoiceRule> findAllRules() throws Exception {
 		logger.info("InvoiceApprovalRuleDoaImpl >> ");
 		try {
 			return repository.findAll();
@@ -41,7 +49,7 @@ public class InvoiceApprovalRuleDoa implements IInvoiceApprovalRuleDoa {
 	}
 
 	@Override
-	public InvoiceApprovalRule find(Integer id) throws Exception {
+	public InvoiceRule find(Integer id) throws Exception {
 		 try {
 			return repository.getOne(id);
 		} catch (Exception e) {
@@ -51,17 +59,19 @@ public class InvoiceApprovalRuleDoa implements IInvoiceApprovalRuleDoa {
 	}
 
 	@Override
-	public InvoiceApprovalRule create(InvoiceApprovalRule invoiceApprovalRule) throws Exception {
+	public InvoiceRule create(InvoiceRule invoiceApprovalRule) throws Exception {
 		try {
+			invoiceApprovalRule.setOrganization(orgRepo.getOne(invoiceApprovalRule.getOrganization().getOrgId()));
+			invoiceApprovalRule.setCreatedAt(new Date());
 			return repository.save(invoiceApprovalRule);
 		} catch (Exception e) {
-			logger.error("An exception occured in create >>",e.getCause());
+			logger.error("An exception occured in create >>",e);
 		}
 		return invoiceApprovalRule;
 	}
 
 	@Override
-	public InvoiceApprovalRule update(Integer id, InvoiceApprovalRule invoiceApprovalRule) throws Exception {
+	public InvoiceRule update(Integer id, InvoiceRule invoiceApprovalRule) throws Exception {
 		try {
 			if (repository.existsById(id)) {
 				return repository.save(invoiceApprovalRule);
@@ -85,10 +95,10 @@ public class InvoiceApprovalRuleDoa implements IInvoiceApprovalRuleDoa {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<InvoiceApprovalRule> findAllRulesByOrgId(Integer orgId) throws Exception {
+	public Iterable<InvoiceRule> findAllRulesByOrgId(Integer orgId) throws Exception {
 		try {
 			String hql = "FROM InvoiceApprovalRule as ipr WHERE ipr.orgId = :orgId";
-			List<InvoiceApprovalRule> invoiceApprovalRules = entityManager.createQuery(hql).setParameter("orgId", orgId)
+			List<InvoiceRule> invoiceApprovalRules = entityManager.createQuery(hql).setParameter("orgId", orgId)
 			              .getResultList();
 			return invoiceApprovalRules;
 		} catch (Exception e) {
@@ -96,7 +106,5 @@ public class InvoiceApprovalRuleDoa implements IInvoiceApprovalRuleDoa {
 		}
 		return null;
 	}
-
-	
 
 }

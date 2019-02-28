@@ -9,14 +9,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.invoiceApproval.Utils.Messages;
 import com.invoiceApproval.entity.ResponseVO;
 import com.invoiceApproval.entity.UserDTO;
-import com.invoiceApproval.exception.UserNotFoundException;
+import com.invoiceApproval.exception.InvoiceApprovalException;
 import com.invoiceApproval.service.ILoginService;
 
 /**
  * @author atul_jadhav
- *
+ *	
  */
 @RestController
 public class LoginController {
@@ -25,25 +26,41 @@ public class LoginController {
 
 	@Autowired
 	private ILoginService loginService;
+	
+	@Autowired
+    private Messages messages;
 
 	
 	/**
-	 * This method called when user try to login. 
+	 * This method called when user login. 
 	 * @param userDTO
 	 * @return success/failure message 
+	 * @throws InvoiceApprovalException 
 	 */
 	@PostMapping(path="/login")
-	public ResponseVO login(@Valid @RequestBody UserDTO userDTO) {
+	public ResponseVO login(@Valid @RequestBody UserDTO userDTO) throws InvoiceApprovalException {
 		
 		LOGGER.info("Enter LoginController login()");
-		
 		ResponseVO responseVO = new ResponseVO();
-		if (loginService.validateUser(userDTO.getUsername(), userDTO.getPassword())) {
-			responseVO.setMessage("Login successfull");
-			return responseVO;
-		} else {
-			LOGGER.error("Invalid user credential.");
-			throw new UserNotFoundException("Invalid credential - user not found.");
+		try
+		{
+			if (loginService.validateUser(userDTO.getUsername(), userDTO.getPassword())) 
+			{
+				responseVO.setMessage(messages.get("user.login.success"));
+				return responseVO;
+			}
+			else
+			{
+				LOGGER.error("Invalid User / Credential.");
+				responseVO.setMessage(messages.get("user.login.failed"));
+				responseVO.setErrorMessage(messages.get("user.login.failed.error"));
+				return responseVO;
+			}
+		} 
+		catch (Exception e)
+		{
+			LOGGER.error("Exception is: ",e);
+			throw new InvoiceApprovalException("Error while user login : "+e.getMessage());
 		}
 	}
 }

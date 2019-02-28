@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ * @author atul_jadhav
+ *
+ */
 @ControllerAdvice
 public class InvoiceExceptionHandler {
 
@@ -20,7 +24,7 @@ public class InvoiceExceptionHandler {
 	 * This method handle method parameter validation exceptions.
 	 * 
 	 * @param ex
-	 * @return
+	 * @return ErrorDetails
 	 */
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
@@ -34,16 +38,22 @@ public class InvoiceExceptionHandler {
 		return errorDetails;
 	}
 	
+	/**
+	 * 
+	 * This method handle exception if user is not found.
+	 * @param ex
+	 * @return ErrorDetails
+	 */
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
-	@ExceptionHandler(UserNotFoundException.class)
-	public ErrorDetails userNotFoundException(UserNotFoundException ex)
+	@ExceptionHandler(InvoiceApprovalException.class)
+	public ErrorDetails invoiceApprovalException(InvoiceApprovalException ex)
 	{
 		logger.info("Enter InvoiceExceptionHandler handleMethodArgumentNotValid()");
 		ErrorDetails errorDetails = new ErrorDetails();
 		errorDetails.setTimestamp(new Date());
-		errorDetails.setMessage("Validation failed");
-		errorDetails.setDetails(ex.getMessage());
+		errorDetails.setMessage("Exception in application");
+		errorDetails.setDetails(ex.getErrorMessage());
 		return errorDetails;
 	}
 }

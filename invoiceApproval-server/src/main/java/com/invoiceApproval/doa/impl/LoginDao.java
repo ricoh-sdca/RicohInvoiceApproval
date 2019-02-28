@@ -20,7 +20,14 @@ public class LoginDao implements ILoginDAO {
 	@Autowired 
 	UserRepository repository;
 
-	public boolean validateUser(String userName,String password) {
+	
+	/** 
+	 * This method validate user credentials.
+	 * @return boolean
+	 * @param userName,password
+	 */
+	@Override
+	public boolean validateUser(String userName,String password){
 		LOGGER.info("Enter LoginDao validateUser()");
 		User user = repository.findUserByCredential(userName, password);
 		return user != null ? true : false;

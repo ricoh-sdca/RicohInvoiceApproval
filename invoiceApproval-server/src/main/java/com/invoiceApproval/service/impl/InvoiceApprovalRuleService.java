@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.invoiceApproval.doa.impl.InvoiceApprovalRuleDoa;
-import com.invoiceApproval.entity.InvoiceApprovalRule;
+import com.invoiceApproval.entity.InvoiceRule;
 import com.invoiceApproval.entity.RuleDetails;
 import com.invoiceApproval.service.IInvoiceApprovalRuleService;
+import com.invoiceApproval.service.IInvoiceService;
 
 @Service
 public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  {
@@ -21,12 +22,15 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
 	@Autowired
     private InvoiceApprovalRuleDoa invoiceApprovalRuleDoa;
 	
+	@Autowired 
+	private IInvoiceService invoiceService;
+	
 	/**
      * This method is used for fetching all RULES 
      * @return
      */
 	@Override
-	public Iterable<InvoiceApprovalRule> findAllRules() throws Exception{
+	public List<InvoiceRule> findAllRules() throws Exception{
 		logger.info("InvoiceApprovalServiceImpl >> ");
 		return invoiceApprovalRuleDoa.findAllRules();
 	}
@@ -37,7 +41,7 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
      * @return
      */
 	@Override
-	public InvoiceApprovalRule find(Integer id) throws Exception{
+	public InvoiceRule find(Integer id) throws Exception{
 		return invoiceApprovalRuleDoa.find(id);
 	}
 
@@ -47,7 +51,7 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
      * @return
      */
 	@Override
-	public InvoiceApprovalRule create(InvoiceApprovalRule invoiceApprovalRule) throws Exception{
+	public InvoiceRule create(InvoiceRule invoiceApprovalRule) throws Exception{
 		logger.info("This is testing here.....");
 		if(isValidRule(invoiceApprovalRule)) {
 			return invoiceApprovalRuleDoa.create(invoiceApprovalRule);
@@ -65,8 +69,8 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
      * @throws Exception
      */
 	@Override
-	public InvoiceApprovalRule update(Integer id, InvoiceApprovalRule invoiceApprovalRule) throws Exception{
-		if(isAllInvoicesProcessed(invoiceApprovalRule.getOrgId()) && isValidRule(invoiceApprovalRule)) {
+	public InvoiceRule update(Integer id, InvoiceRule invoiceApprovalRule) throws Exception{
+		if(isAllInvoicesProcessed(invoiceApprovalRule.getOrganization().getOrgId()) && isValidRule(invoiceApprovalRule)) {
 			return invoiceApprovalRuleDoa.update(id, invoiceApprovalRule);
 		}else {
 			return null;
@@ -79,8 +83,8 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
      */
 	@Override
 	public void delete(Integer id) throws Exception{
-		InvoiceApprovalRule obj = invoiceApprovalRuleDoa.find(id);
-		if(isAllInvoicesProcessed(obj.getOrgId())) {
+		InvoiceRule obj = invoiceApprovalRuleDoa.find(id);
+		if(isAllInvoicesProcessed(obj.getOrganization().getOrgId())) {
 			invoiceApprovalRuleDoa.delete(id);
 		}else {
 			logger.error("Invoices still in Pending state. Cannot delete Rule");
@@ -92,7 +96,7 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
 	 * @param orgId
 	 */
 	@Override
-	public Iterable<InvoiceApprovalRule> findAllRulesByOrgId(Integer orgId) throws Exception {
+	public Iterable<InvoiceRule> findAllRulesByOrgId(Integer orgId) throws Exception {
 		return invoiceApprovalRuleDoa.findAllRulesByOrgId(orgId);
 	}
 
@@ -102,40 +106,50 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
 	 * @param invoiceApprovalRule
 	 * @return
 	 */
-	public boolean isValidRule(InvoiceApprovalRule invoiceApprovalRule) {
-		List<RuleDetails> list = invoiceApprovalRule.getRule().getRuleDetails();
-		boolean inValidRuleFlag = false;
+	public boolean isValidRule(InvoiceRule invoiceApprovalRule) {
 		
-		//Comparator definition for RuleDetails
-		Comparator<RuleDetails> compa = new Comparator<RuleDetails>() {
-			@Override
-			public int compare(RuleDetails o1, RuleDetails o2) {
-				if(o1.getFromAmt() < o2.getFromAmt()) {
-					return -1;
-				}else if(o1.getFromAmt() > o2.getFromAmt()) {
-					return 1;
-				}else {
-					return 0;	
+		if(invoiceApprovalRule.getRule() != null && invoiceApprovalRule.getRule().getRuleDetails() != null)
+		{
+			List<RuleDetails> list = invoiceApprovalRule.getRule().getRuleDetails();
+			
+			boolean inValidRuleFlag = false;
+			
+			//Comparator definition for RuleDetails
+			Comparator<RuleDetails> compa = new Comparator<RuleDetails>() {
+				@Override
+				public int compare(RuleDetails o1, RuleDetails o2) {
+					if(o1.getFromAmt() < o2.getFromAmt()) {
+						return -1;
+					}else if(o1.getFromAmt() > o2.getFromAmt()) {
+						return 1;
+					}else {
+						return 0;	
+					}
+				}
+			};
+			
+			// Sorting list based on FromAmt Filed
+			list.sort(compa);
+			
+			//Validating Rule 
+			for (int i = 0; i < list.size()-1; i++) {
+				if(list.get(i).getToAmt() != list.get(i+1).getFromAmt()) {
+					logger.info("Missing/Duplicate/Overlapping range .."+list.get(i).getToAmt() +"-"+list.get(i+1).getFromAmt());
+					inValidRuleFlag = true;
+					break;
 				}
 			}
-		};
-		
-		// Sorting list based on FromAmt Filed
-		list.sort(compa);
-		
-		//Validating Rule 
-		for (int i = 0; i < list.size()-1; i++) {
-			if(list.get(i).getToAmt() != list.get(i+1).getFromAmt()) {
-				logger.info("Missing/Duplicate/Overlapping range .."+list.get(i).getToAmt() +"-"+list.get(i+1).getFromAmt());
-				inValidRuleFlag = true;
-				break;
+			
+			// Returning flag
+			if(!inValidRuleFlag) {
+				return true;
+			}else {
+				return false;
 			}
 		}
-		
-		// Returning flag
-		if(!inValidRuleFlag) {
-			return true;
-		}else {
+		else
+		{
+			logger.error("Invoice rule details not found..");
 			return false;
 		}
 	}
@@ -144,9 +158,10 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
 	 * This method is used to validate if all Invoices for the ORG_ID are processed (i.e. APPROVED / REJECTED)
 	 * @param orgId
 	 * @return
+	 * @throws Exception 
 	 */
-	public boolean isAllInvoicesProcessed(Integer orgId) {
-		//TODO : Check if all invoices for Org_id are processed (i.e. APPROVED / REJECTED)
-		return true;
+	public boolean isAllInvoicesProcessed(Integer orgId) throws Exception {
+		logger.info("Enter isAllInvoicesProcessed() of InvoiceApprovalRuleService");
+		return invoiceService.isAllInvoicesProcessed(orgId);
 	}
 }
