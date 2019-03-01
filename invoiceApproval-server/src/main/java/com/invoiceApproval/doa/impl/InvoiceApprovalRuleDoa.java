@@ -59,15 +59,13 @@ public class InvoiceApprovalRuleDoa implements IInvoiceApprovalRuleDoa {
 	}
 
 	@Override
-	public InvoiceRule create(InvoiceRule invoiceApprovalRule) throws Exception {
+	public InvoiceRule create(InvoiceRule invoiceRule) throws Exception {
 		try {
-			invoiceApprovalRule.setOrganization(orgRepo.getOne(invoiceApprovalRule.getOrganization().getOrgId()));
-			invoiceApprovalRule.setCreatedAt(new Date());
-			return repository.save(invoiceApprovalRule);
+			return repository.save(invoiceRule);
 		} catch (Exception e) {
 			logger.error("An exception occured in create >>",e);
 		}
-		return invoiceApprovalRule;
+		return invoiceRule;
 	}
 
 	@Override

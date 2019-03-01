@@ -51,12 +51,12 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
      * @return
      */
 	@Override
-	public InvoiceRule create(InvoiceRule invoiceApprovalRule) throws Exception{
-		logger.info("This is testing here.....");
-		if(isValidRule(invoiceApprovalRule)) {
-			return invoiceApprovalRuleDoa.create(invoiceApprovalRule);
+	public InvoiceRule create(InvoiceRule invoiceRule) throws Exception{
+		logger.info("Validating rule");
+		if(isValidRule(invoiceRule)) {
+			return invoiceApprovalRuleDoa.create(invoiceRule);
 		}else {
-			logger.info("This is testing here.....returing NULL");
+			logger.info("Incorrect amount range (Duplicate / Overlapping / Missing). Kindly verify amount range and try again");
 			return null;
 		}
 	}
@@ -107,7 +107,7 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
 	 * @return
 	 */
 	public boolean isValidRule(InvoiceRule invoiceApprovalRule) {
-		
+		logger.info("calling isValidRule .. ");
 		if(invoiceApprovalRule.getRule() != null && invoiceApprovalRule.getRule().getRuleDetails() != null)
 		{
 			List<RuleDetails> list = invoiceApprovalRule.getRule().getRuleDetails();
