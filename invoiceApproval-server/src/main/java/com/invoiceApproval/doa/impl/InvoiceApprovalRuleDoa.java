@@ -95,7 +95,7 @@ public class InvoiceApprovalRuleDoa implements IInvoiceApprovalRuleDoa {
 	@Override
 	public Iterable<InvoiceRule> findAllRulesByOrgId(Integer orgId) throws Exception {
 		try {
-			String hql = "FROM InvoiceApprovalRule as ipr WHERE ipr.orgId = :orgId";
+			String hql = "FROM InvoiceRule as ipr WHERE ipr.organization.orgId = :orgId";
 			List<InvoiceRule> invoiceApprovalRules = entityManager.createQuery(hql).setParameter("orgId", orgId)
 			              .getResultList();
 			return invoiceApprovalRules;
