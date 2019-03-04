@@ -7,6 +7,6 @@ import com.invoiceApproval.entity.InvoiceRule;
 
 
 @RestResource(exported = false)
-public interface InvoiceApprovalRuleRepository extends JpaRepository<InvoiceRule, Integer> {
+public interface InvoiceRuleRepository extends JpaRepository<InvoiceRule, Integer> {
 
 }

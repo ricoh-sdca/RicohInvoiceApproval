@@ -1,8 +1,8 @@
-package com.invoiceApproval.service;
+package com.invoiceApproval.doa;
 
 import com.invoiceApproval.entity.InvoiceRule;
 
-public interface IInvoiceApprovalRuleService {
+public interface IInvoiceRuleDoa {
 
 	public Iterable<InvoiceRule> findAllRules() throws Exception;
 	
@@ -15,5 +15,4 @@ public interface IInvoiceApprovalRuleService {
 	public InvoiceRule update(Integer id,InvoiceRule invoiceApprovalRule) throws Exception;
 	
 	public void delete(Integer id) throws Exception;
-	
 }

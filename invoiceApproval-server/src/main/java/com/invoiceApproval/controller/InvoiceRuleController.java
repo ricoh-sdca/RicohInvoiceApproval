@@ -20,7 +20,7 @@ import com.invoiceApproval.Utils.Messages;
 import com.invoiceApproval.entity.InvoiceRule;
 import com.invoiceApproval.entity.InvoiceRuleDTO;
 import com.invoiceApproval.entity.ResponseVO;
-import com.invoiceApproval.service.impl.InvoiceApprovalRuleService;
+import com.invoiceApproval.service.impl.InvoiceRuleService;
 
 import javassist.tools.web.BadHttpRequest;
 
@@ -28,15 +28,15 @@ import javassist.tools.web.BadHttpRequest;
  * This class represent invoice approval rule rest resource method. 
  */
 @RestController
-public class InvoiceApprovalRuleController {
+public class InvoiceRuleController {
 	
-	private static final Logger logger = LogManager.getLogger(InvoiceApprovalRuleController.class);
+	private static final Logger logger = LogManager.getLogger(InvoiceRuleController.class);
 
 	@Autowired
     private Messages messages;
     
     @Autowired
-    private InvoiceApprovalRuleService invoiceApprovalRuleService;
+    private InvoiceRuleService invoiceRuleService;
     
     /**
      * This method is used for fetching all RULES 
@@ -46,7 +46,7 @@ public class InvoiceApprovalRuleController {
     public List<InvoiceRule> findAll() {
     	logger.info("Calling ");
     	try {
-			return invoiceApprovalRuleService.findAllRules();
+			return invoiceRuleService.findAllRules();
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> findAll ",e.getCause());
 		}
@@ -61,7 +61,7 @@ public class InvoiceApprovalRuleController {
     public Iterable<InvoiceRule> findAllRulesByOrgId(@PathVariable("orgId") Integer orgId) {
     	logger.info("Calling ");
     	try {
-			return invoiceApprovalRuleService.findAllRulesByOrgId(orgId);
+			return invoiceRuleService.findAllRulesByOrgId(orgId);
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> findAll ",e.getCause());
 		}
@@ -76,7 +76,7 @@ public class InvoiceApprovalRuleController {
     @GetMapping(path="/rules/{id}")
     public InvoiceRule find(@PathVariable("id") Integer id) {
         try {
-			return invoiceApprovalRuleService.find(id);
+			return invoiceRuleService.find(id);
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> find ",e.getCause());
 		}
@@ -94,7 +94,7 @@ public class InvoiceApprovalRuleController {
     	ResponseVO responseVO = null;
     	InvoiceRule invoiceRule = invoiceRuleDTO.wrapper(invoiceRuleDTO);
     	try {
-    		invoiceRule = invoiceApprovalRuleService.create(invoiceRule);
+    		invoiceRule = invoiceRuleService.create(invoiceRule);
     		if(null != invoiceRule) {
     			responseVO = new ResponseVO(Constants.SUCCESS, messages.get("rule.success"), null);
     		}else {
@@ -119,9 +119,9 @@ public class InvoiceApprovalRuleController {
 		ResponseVO responseVO = null;
 		InvoiceRule invoiceRule = invoiceRuleDTO.wrapper(invoiceRuleDTO);
 		try {
-			invoiceRule = invoiceApprovalRuleService.update(id, invoiceRule);
+			invoiceRule = invoiceRuleService.update(id, invoiceRule);
 			if(null != invoiceRule) {
-    			responseVO = new ResponseVO(Constants.SUCCESS, messages.get("rule.success"), null);
+    			responseVO = new ResponseVO(Constants.SUCCESS, messages.get("rule.update.success"), null);
     		}else {
     			responseVO = new ResponseVO(Constants.FAILED, null,messages.get("rule.invalid"));
     		}
@@ -140,7 +140,7 @@ public class InvoiceApprovalRuleController {
     public void delete(@PathVariable("id") Integer id) {
     	ResponseVO responseVO = null;
     	try {
-    		invoiceApprovalRuleService.delete(id);
+    		invoiceRuleService.delete(id);
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> delete ",e.getCause());
 		}

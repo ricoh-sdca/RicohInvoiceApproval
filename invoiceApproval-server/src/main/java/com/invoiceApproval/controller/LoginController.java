@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +39,7 @@ public class LoginController {
 	 * @throws InvoiceApprovalException 
 	 */
 	@PostMapping(path="/login")
+	@CrossOrigin(origins="http://localhost:4200")
 	public ResponseVO login(@Valid @RequestBody UserDTO userDTO) throws InvoiceApprovalException {
 		
 		LOGGER.info("Enter LoginController login()");
