@@ -1,5 +1,6 @@
 package com.invoiceApproval.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -20,11 +21,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "invoice_approval_rule_tbl")
-public class InvoiceRule {
+public class InvoiceRule implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)	
 	public Integer id;
 
 	@Type(type = "com.invoiceApproval.entity.types.JsonType", parameters = {

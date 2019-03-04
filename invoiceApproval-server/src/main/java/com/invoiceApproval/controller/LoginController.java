@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.invoiceApproval.Utils.Constants;
 import com.invoiceApproval.Utils.Messages;
 import com.invoiceApproval.entity.ResponseVO;
 import com.invoiceApproval.entity.UserDTO;
@@ -41,19 +42,18 @@ public class LoginController {
 	public ResponseVO login(@Valid @RequestBody UserDTO userDTO) throws InvoiceApprovalException {
 		
 		LOGGER.info("Enter LoginController login()");
-		ResponseVO responseVO = new ResponseVO();
+		ResponseVO responseVO = null;
 		try
 		{
 			if (loginService.validateUser(userDTO.getUsername(), userDTO.getPassword())) 
 			{
-				responseVO.setMessage(messages.get("user.login.success"));
+				responseVO = new ResponseVO(Constants.SUCCESS, messages.get("user.login.success"), null);
 				return responseVO;
 			}
 			else
 			{
 				LOGGER.error("Invalid User / Credential.");
-				responseVO.setMessage(messages.get("user.login.failed"));
-				responseVO.setErrorMessage(messages.get("user.login.failed.error"));
+				responseVO = new ResponseVO(Constants.FAILED,messages.get("user.login.failed"),messages.get("user.login.failed.error"));
 				return responseVO;
 			}
 		} 

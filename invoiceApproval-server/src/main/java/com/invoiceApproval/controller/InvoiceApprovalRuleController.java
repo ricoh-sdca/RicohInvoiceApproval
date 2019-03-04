@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ import javassist.tools.web.BadHttpRequest;
  * This class represent invoice approval rule rest resource method. 
  */
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class InvoiceApprovalRuleController {
 	
 	private static final Logger logger = LogManager.getLogger(InvoiceApprovalRuleController.class);
@@ -137,12 +139,13 @@ public class InvoiceApprovalRuleController {
      * @param id
      */
     @DeleteMapping(path="/rules/delete/{id}")
-    public void delete(@PathVariable("id") Integer id) {
-    	ResponseVO responseVO = null;
+    public ResponseVO delete(@PathVariable("id") Integer id) {
     	try {
     		invoiceApprovalRuleService.delete(id);
+    		return new ResponseVO(Constants.SUCCESS,"Rule deleted successful",null);
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> delete ",e.getCause());
+			return new ResponseVO(Constants.FAILED,messages.get("rule.error"),e.getMessage());
 		}
     }
 }
