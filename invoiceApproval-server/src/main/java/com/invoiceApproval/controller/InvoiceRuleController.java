@@ -119,7 +119,7 @@ public class InvoiceRuleController {
 		ResponseVO responseVO = null;
 		InvoiceRule invoiceRule = invoiceRuleDTO.wrapper(invoiceRuleDTO);
 		try {
-			invoiceRule = invoiceRuleService.update(id, invoiceRule);
+			responseVO = invoiceRuleService.update(id, invoiceRule);
 			if(null != invoiceRule) {
     			responseVO = new ResponseVO(Constants.SUCCESS, messages.get("rule.update.success"), null);
     		}else {
@@ -137,12 +137,16 @@ public class InvoiceRuleController {
      * @param id
      */
     @DeleteMapping(path="/rules/delete/{id}")
-    public void delete(@PathVariable("id") Integer id) {
+    public ResponseVO delete(@PathVariable("id") Integer id) {
     	ResponseVO responseVO = null;
     	try {
     		invoiceRuleService.delete(id);
+    		responseVO = new ResponseVO(Constants.SUCCESS, null, null);
+    		return responseVO;
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> delete ",e.getCause());
+			responseVO = new ResponseVO(Constants.FAILED, null, null);
 		}
+		return responseVO;
     }
 }

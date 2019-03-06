@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.invoiceApproval.doa.IInvoiceRuleDoa;
 import com.invoiceApproval.entity.InvoiceRule;
+import com.invoiceApproval.exception.InvoiceApprovalException;
 import com.invoiceApproval.repository.InvoiceRuleRepository;
 
 import javassist.tools.web.BadHttpRequest;
@@ -49,8 +50,8 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 			return repository.getOne(id);
 		} catch (Exception e) {
 			logger.error("An exception occured in find >>",e.getCause());
+			throw new InvoiceApprovalException("Requested rule is not present.");
 		}
-		return null;
 	}
 
 	@Override
@@ -90,7 +91,7 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 	@Override
 	public Iterable<InvoiceRule> findAllRulesByOrgId(Integer orgId) throws Exception {
 		try {
-			String hql = "FROM InvoiceRule as ipr WHERE ipr.organization.orgId = :orgId";
+			String hql = "FROM InvoiceRule as ipr WHERE ipr.organization.orgId = :orgId and ipr.ruleStatus='active'";
 			List<InvoiceRule> invoiceApprovalRules = entityManager.createQuery(hql).setParameter("orgId", orgId)
 			              .getResultList();
 			return invoiceApprovalRules;

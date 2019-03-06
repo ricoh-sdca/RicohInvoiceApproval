@@ -12,6 +12,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name="invoice_tbl")
@@ -23,33 +27,45 @@ public class Invoice implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="invoice_number")
+	@Column(name="invoice_number",nullable=false)
+	@NotEmpty(message="{invoice.invoiceNumber}")
 	private String invoiceNumber;
 	
-	@Column(name="amount_due")
+	@Column(name="amount_due",nullable=false)
+	@NotNull(message="{invoice.invoiceAmt}")
 	private BigDecimal invoiceAmt;
 	
-	@Column(name="invoicee_e-mail")
+	@Column(name="invoicee_e-mail",nullable=false)
+	@NotEmpty(message="{invoice.invoiceeEmail}")
 	private String invoiceeEmail;
 	
-	@Column(name="invoice_img_link")
+	@Column(name="invoice_img_link",nullable=false)
+	@NotEmpty(message="{invoice.invoiceImgLink}")
 	private String invoiceImgLink;
 	
-	@Column(name="invoice_date")
+	
 	@Temporal(TemporalType.DATE)
+	@NotNull(message="{invoice.invoiceDate}")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Column(name="invoice_date",nullable=false)
 	private Date invoiceDate;
 	
-	@Column(name="due_date")
+	
 	@Temporal(TemporalType.DATE)
+	@NotNull(message="{invoice.invoiceDueDate}")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Column(name="due_date",nullable=false)
 	private Date invoiceDueDate;
 	
-	@Column(name="invoice_status")
+	
+	@NotEmpty(message="{invoice.invoiceStatus}")
+	@Column(name="invoice_status",nullable=false)
 	private String invoiceStatus;
 	
-	@Column(name="curr_approval_level")
+	@Column(name="curr_approval_level",nullable=false)
 	private String currApprovalLevel;
 	
-	@Column(name="final_approval_level")
+	@Column(name="final_approval_level",nullable=false)
 	private String finalApprovalLevel;
 	
 	@Column
@@ -68,7 +84,6 @@ public class Invoice implements Serializable{
 	@Column(name="updated_at")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
-	
 	
 	@ManyToOne
 	@JoinColumn(name="org_id")

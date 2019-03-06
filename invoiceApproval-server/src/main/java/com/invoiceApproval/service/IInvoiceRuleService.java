@@ -1,6 +1,7 @@
 package com.invoiceApproval.service;
 
 import com.invoiceApproval.entity.InvoiceRule;
+import com.invoiceApproval.entity.ResponseVO;
 
 public interface IInvoiceRuleService {
 
@@ -12,8 +13,8 @@ public interface IInvoiceRuleService {
 	
 	public InvoiceRule create(InvoiceRule invoiceApprovalRule) throws Exception;
 	
-	public InvoiceRule update(Integer id,InvoiceRule invoiceApprovalRule) throws Exception;
+	public ResponseVO update(Integer id,InvoiceRule invoiceApprovalRule) throws Exception;
 	
-	public void delete(Integer id) throws Exception;
+	public ResponseVO delete(Integer id) throws Exception;
 	
 }

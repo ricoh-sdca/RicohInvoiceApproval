@@ -1,13 +1,14 @@
 package com.invoiceApproval.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 public class RuleDetails {
 
 	public String currency;
-	public int fromAmt;
-	public int toAmt;
+	public BigDecimal fromAmt;
+	public BigDecimal toAmt;
 	public List<String> level;
 	public Date updatedAt;
 	
@@ -16,18 +17,6 @@ public class RuleDetails {
 	}
 	public void setCurrency(String currency) {
 		this.currency = currency;
-	}
-	public int getFromAmt() {
-		return fromAmt;
-	}
-	public void setFromAmt(int fromAmt) {
-		this.fromAmt = fromAmt;
-	}
-	public int getToAmt() {
-		return toAmt;
-	}
-	public void setToAmt(int toAmt) {
-		this.toAmt = toAmt;
 	}
 	public List<String> getLevel() {
 		return level;
@@ -42,8 +31,19 @@ public class RuleDetails {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	
-	public RuleDetails(String currency, int fromAmt, int toAmt, List<String> level, Date updatedAt) {
+	public BigDecimal getFromAmt() {
+		return fromAmt;
+	}
+	public void setFromAmt(BigDecimal fromAmt) {
+		this.fromAmt = fromAmt;
+	}
+	public BigDecimal getToAmt() {
+		return toAmt;
+	}
+	public void setToAmt(BigDecimal toAmt) {
+		this.toAmt = toAmt;
+	}
+	public RuleDetails(String currency, BigDecimal fromAmt, BigDecimal toAmt, List<String> level, Date updatedAt) {
 		super();
 		this.currency = currency;
 		this.fromAmt = fromAmt;

@@ -18,7 +18,7 @@ import com.invoiceApproval.repository.InvoiceRepository;
 public class InvoiceDao implements IInvoiceDao {
 	
 	private static final Logger logger = LogManager.getLogger(InvoiceDao.class);
-
+	
 	@Autowired
 	InvoiceRepository repository;
 	
@@ -27,8 +27,8 @@ public class InvoiceDao implements IInvoiceDao {
 	
 	@Override
 	public boolean isAllInvoicesProcessed(Integer orgId) {
-		String query = "select i from Invoice i where i.organization.orgId=:orgId and i.invoiceStatus=:status";
-		int count = manager.createQuery(query).setParameter("orgId", orgId).setParameter("invoiceStatus", "pending").getResultList().size();
+		String query = "select i from Invoice i where i.organization.orgId=:orgId and i.invoiceStatus='pending'";
+		int count = manager.createQuery(query).setParameter("orgId", orgId).getResultList().size();
 		return count > 0 ? false : true;
 	}
 

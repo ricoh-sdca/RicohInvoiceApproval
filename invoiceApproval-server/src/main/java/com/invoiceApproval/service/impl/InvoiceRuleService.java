@@ -8,9 +8,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.invoiceApproval.Utils.Constants;
+import com.invoiceApproval.Utils.Messages;
 import com.invoiceApproval.doa.impl.InvoiceRuleDoa;
 import com.invoiceApproval.entity.InvoiceRule;
+import com.invoiceApproval.entity.ResponseVO;
 import com.invoiceApproval.entity.RuleDetails;
+import com.invoiceApproval.exception.InvoiceApprovalException;
 import com.invoiceApproval.service.IInvoiceRuleService;
 import com.invoiceApproval.service.IInvoiceService;
 
@@ -24,6 +28,9 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 	
 	@Autowired 
 	private IInvoiceService invoiceService;
+	
+	@Autowired
+	Messages messages;
 	
 	/**
      * This method is used for fetching all RULES 
@@ -57,7 +64,7 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 			return invoiceRuleDoa.create(invoiceRule);
 		}else {
 			logger.info("Incorrect amount range (Duplicate / Overlapping / Missing). Kindly verify amount range and try again");
-			return null;
+			throw new InvoiceApprovalException(messages.get("rule.invalid"));
 		}
 	}
 
@@ -69,25 +76,33 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
      * @throws Exception
      */
 	@Override
-	public InvoiceRule update(Integer id, InvoiceRule invoiceApprovalRule) throws Exception{
+	public ResponseVO update(Integer id, InvoiceRule invoiceApprovalRule) throws Exception{
 		if(isAllInvoicesProcessed(invoiceApprovalRule.getOrganization().getOrgId()) && isValidRule(invoiceApprovalRule)) {
-			return invoiceRuleDoa.update(id, invoiceApprovalRule);
+			InvoiceRule updatedRule = invoiceRuleDoa.update(id, invoiceApprovalRule);
+			if(updatedRule != null) 
+				new ResponseVO(Constants.SUCCESS, messages.get("rule.update.success"), null);
+			else
+				new ResponseVO(Constants.FAILED, "Rule updation failed.", messages.get("rule.error"));
 		}else {
-			return null;
+			return new ResponseVO(Constants.FAILED, "Rule updation failed.", messages.get("rule.status.pending"));
 		}
+		return new ResponseVO(Constants.FAILED, "Rule updation failed.", messages.get("rule.error"));
 	}
 	
 	 /**
      * This method is used for deleting Rule based on Primary Key = ID
      * @param id
+	 * @return 
      */
 	@Override
-	public void delete(Integer id) throws Exception{
+	public ResponseVO delete(Integer id) throws Exception{
 		InvoiceRule obj = invoiceRuleDoa.find(id);
 		if(isAllInvoicesProcessed(obj.getOrganization().getOrgId())) {
 			invoiceRuleDoa.delete(id);
+			return new ResponseVO(Constants.SUCCESS,messages.get("rule.delete.success"),null);
 		}else {
 			logger.error("Invoices still in Pending state. Cannot delete Rule");
+			return new ResponseVO(Constants.FAILED, "Rule deletion failed.",messages.get("rule.status.pending"));
 		}
 	}
 	
@@ -118,9 +133,9 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 			Comparator<RuleDetails> compa = new Comparator<RuleDetails>() {
 				@Override
 				public int compare(RuleDetails o1, RuleDetails o2) {
-					if(o1.getFromAmt() < o2.getFromAmt()) {
+					if(o1.getFromAmt().intValue() < o2.getFromAmt().intValue()) {
 						return -1;
-					}else if(o1.getFromAmt() > o2.getFromAmt()) {
+					}else if(o1.getFromAmt().intValue() > o2.getFromAmt().intValue()) {
 						return 1;
 					}else {
 						return 0;	
