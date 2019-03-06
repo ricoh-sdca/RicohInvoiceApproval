@@ -36,8 +36,12 @@ public class InvoiceController {
 		
 		logger.info("calling saveInvoiceDetails() of InvoiceController");
 		try {
-			invoiceService.saveInvoiceDetails(invoice);
-			return new ResponseVO(Constants.SUCCESS, messages.get("invoice.success"),null);
+			Invoice createdInvoice =  invoiceService.saveInvoiceDetails(invoice);
+			if(createdInvoice != null)
+				return new ResponseVO(Constants.SUCCESS, messages.get("invoice.success"),null);
+			else
+				return new ResponseVO(Constants.FAILED, null,messages.get("invoice.error"));
+			
 		} catch (Exception e) {
 			logger.error(messages.get("invoice.error"),e);
 			return new ResponseVO(Constants.FAILED, messages.get("invoice.error"), e.getMessage());
