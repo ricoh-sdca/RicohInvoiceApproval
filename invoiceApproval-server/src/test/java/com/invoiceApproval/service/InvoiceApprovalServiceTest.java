@@ -15,22 +15,22 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.invoiceApproval.doa.impl.InvoiceApprovalRuleDoa;
+import com.invoiceApproval.doa.impl.InvoiceRuleDoa;
 import com.invoiceApproval.entity.InvoiceRule;
 import com.invoiceApproval.entity.Rule;
 import com.invoiceApproval.entity.RuleDetails;
-import com.invoiceApproval.service.impl.InvoiceApprovalRuleService;
+import com.invoiceApproval.service.impl.InvoiceRuleService;
 
 
 @RunWith(SpringRunner.class)
-@RestClientTest(InvoiceApprovalRuleService.class)
+@RestClientTest(InvoiceRuleService.class)
 public class InvoiceApprovalServiceTest {
 	
 	@MockBean
-	InvoiceApprovalRuleDoa invoiceApprovalRuleDoa; 
+	InvoiceRuleDoa invoiceApprovalRuleDoa; 
 	
 	@Autowired
-	private InvoiceApprovalRuleService invoiceApprovalRuleService;
+	private InvoiceRuleService invoiceApprovalRuleService;
 
 	/**
 	 * Test Data - InvoiceApprovalRule
