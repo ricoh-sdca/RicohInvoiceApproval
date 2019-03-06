@@ -25,6 +25,10 @@ public class InvoiceDao implements IInvoiceDao {
 	@PersistenceContext
 	EntityManager manager;
 	
+	/**
+	 * This method is used to verify of All invoices are processed (i.e. APPROVED / REJECTED)
+	 * @param orgId
+	 */
 	@Override
 	public boolean isAllInvoicesProcessed(Integer orgId) {
 		String query = "select i from Invoice i where i.organization.orgId=:orgId and i.invoiceStatus='pending'";
@@ -32,6 +36,10 @@ public class InvoiceDao implements IInvoiceDao {
 		return count > 0 ? false : true;
 	}
 
+	/**
+	 * This is method is used to store Invoice from Ricoh APS Account
+	 * @param invoice
+	 */
 	@Override
 	public Invoice saveInvoiceDetails(Invoice invoice) {
 		logger.info("Calling saveInvoiceDetails .. ");

@@ -1,21 +1,26 @@
 package com.invoiceApproval.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jeasy.rules.api.Facts;
+import org.jeasy.rules.api.Rules;
+import org.jeasy.rules.api.RulesEngine;
+import org.jeasy.rules.core.DefaultRulesEngine;
+import org.jeasy.rules.core.RuleProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.invoiceApproval.Utils.Constants;
 import com.invoiceApproval.Utils.Messages;
 import com.invoiceApproval.doa.impl.InvoiceDao;
 import com.invoiceApproval.entity.Invoice;
 import com.invoiceApproval.entity.InvoiceRule;
-import com.invoiceApproval.entity.RuleDetails;
+import com.invoiceApproval.entity.ResponseVO;
 import com.invoiceApproval.exception.InvoiceApprovalException;
 import com.invoiceApproval.service.IInvoiceService;
+import com.invoiceApproval.service.InvoiceRuleEngine;
 
 @Service
 public class InvoiceService implements IInvoiceService {
@@ -31,54 +36,65 @@ public class InvoiceService implements IInvoiceService {
 	@Autowired
 	private Messages messages;
 	
+	@Autowired
+	private InvoiceRuleEngine invoiceRuleEngine; 
+	
+	/**
+	 * This method is used to verify of All invoices are processed (i.e. APPROVED / REJECTED)
+	 * @param orgId
+	 */
 	@Override
 	public boolean isAllInvoicesProcessed(Integer orgId) {
 		logger.info("Enter isAllInvoicesProcessed() of an InvoiceService");
 		return invoiceDao.isAllInvoicesProcessed(orgId);
 	}
 	
+	/**
+	 * This is method is used to store Invoice from Ricoh APS Account
+	 * @param invoice
+	 */
 	@Override
-	public Invoice saveInvoiceDetails(Invoice invoice) throws InvoiceApprovalException {
+	public ResponseVO saveInvoiceDetails(Invoice invoice) throws InvoiceApprovalException {
 
 		// Validations - Mandatory fields 
-		
 		logger.info("calling saveInvoiceDetails() of InvoiceService");
-		// Validations - Mandatory fields
-		boolean isRuleValid = false;
 		try {
+			//Saving status of Invoice to Constants.PENDING
+			invoice.setInvoiceStatus(Constants.PENDING);
+			
 			// Validation - Rule exists for OrgId?
 			Iterable<InvoiceRule> invoiceRules = invoiceRuleService.findAllRulesByOrgId(invoice.getOrganization().getOrgId());
 			if(invoiceRules != null) {
-				outerloop:
-				for (InvoiceRule invoiceRule : invoiceRules)  {
-					List<RuleDetails> ruleDetails = invoiceRule.getRule().getRuleDetails();
-					for (RuleDetails ruleDetail : ruleDetails)  {
-						// Validation - Correct Rule exists ?
-						if(1== ruleDetail.getToAmt().compareTo(invoice.getInvoiceAmt().subtract(new BigDecimal(1)))) {
-							isRuleValid = true;
-							break outerloop;
-						}
-					}
+				InvoiceRule invoiceRule = invoiceRules.iterator().next();
+				
+				// Identify Current and Final Approver using Easy Rule Engine
+				Facts facts = new Facts();
+				facts.put("invoice",invoice);
+				facts.put("mode",invoiceRule.getMode());
+				facts.put("ruleDetails", invoiceRule.getRule().getRuleDetails());
+				facts.put("amount", invoice.getInvoiceAmt());
+				
+				Rules rules = new Rules();
+				rules.register(invoiceRuleEngine);
+				
+				RulesEngine engine = new DefaultRulesEngine();
+				
+				//Validate if Engine Rule returns TRUE or FALSE
+				Map<org.jeasy.rules.api.Rule, Boolean> map = engine.check(rules, facts);
+				if(map.get(RuleProxy.asRule(invoiceRuleEngine))) {
+					engine.fire(rules, facts);
+				}else {
+					logger.error(messages.get("invoice.rule.mismatch"));
+					return new ResponseVO(Constants.FAILED, null,messages.get("invoice.rule.mismatch"));
 				}
-				if(isRuleValid) {
-					// Identify Current and Final Approver using Easy Rule Engine
-					invoice.setCreatedBy("system");
-					invoice.setCreatedAt(new Date());
-					return invoiceDao.saveInvoiceDetails(invoice);
-				}
-				else {
-					throw new InvoiceApprovalException("For this invoice : "+ invoice.getInvoiceNumber()+" there is no valid approval rule present");
-				}
-			}
-			else {
-				throw new InvoiceApprovalException("For this invoice : "+ invoice.getInvoiceNumber()+" there is no approval rule present");
+			}else {
+				return new ResponseVO(Constants.FAILED, null,messages.get("invoice.rule.mismatch"));
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
 			logger.error(messages.get("invoice.error"),e);
 			throw new InvoiceApprovalException(e.getMessage());
 		}
+		return new ResponseVO(Constants.SUCCESS, messages.get("invoice.success"),null);
 	}
-
 }
