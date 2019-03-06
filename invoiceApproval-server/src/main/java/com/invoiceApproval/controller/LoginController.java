@@ -20,7 +20,7 @@ import com.invoiceApproval.service.ILoginService;
 
 /**
  * @author atul_jadhav
- *	
+ * 
  */
 @RestController
 @SessionAttributes("user")
@@ -30,44 +30,38 @@ public class LoginController {
 
 	@Autowired
 	private ILoginService loginService;
-	
-	@Autowired
-    private Messages messages;
 
-	
+	@Autowired
+	private Messages messages;
+
 	/**
-	 * This method called when user login. 
+	 * This method called when user login.
+	 * 
 	 * @param userDTO
-	 * @return success/failure message 
-	 * @throws InvoiceApprovalException 
+	 * @return success/failure message
+	 * @throws InvoiceApprovalException
 	 */
-	@PostMapping(path="/login")
-	public ModelMap login(@Valid @RequestBody UserDTO userDTO) throws InvoiceApprovalException {
-		
+	@PostMapping(path = "/login")
+	public ResponseVO login(@Valid @RequestBody UserDTO userDTO) throws InvoiceApprovalException {
+
 		LOGGER.info("Enter LoginController login()");
 		ResponseVO responseVO = null;
 		ModelMap model = new ModelMap();
-		try
-		{
+		try {
 			model.addAttribute("user", userDTO.getUsername());
-			if (loginService.validateUser(userDTO.getUsername(), userDTO.getPassword())) 
-			{
+			if (loginService.validateUser(userDTO.getUsername(), userDTO.getPassword())) {
 				responseVO = new ResponseVO(Constants.SUCCESS, messages.get("user.login.success"), null);
 				model.addAttribute("response", responseVO);
-				return model;
-			}
-			else
-			{
+				return responseVO;
+			} else {
 				LOGGER.error("Invalid User / Credential.");
-				responseVO = new ResponseVO(Constants.FAILED,messages.get("user.login.failed"),messages.get("user.login.failed.error"));
+				responseVO = new ResponseVO(Constants.FAILED, null, messages.get("user.login.failed.error"));
 				model.addAttribute("response", responseVO);
-				return model;
+				return responseVO;
 			}
-		} 
-		catch (Exception e)
-		{
-			LOGGER.error("Exception is: ",e);
-			throw new InvoiceApprovalException("Error while user login : "+e.getMessage());
+		} catch (Exception e) {
+			LOGGER.error("Exception is: ", e);
+			throw new InvoiceApprovalException(messages.get("login.error") + e.getMessage());
 		}
 	}
 }

@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.invoiceApproval.Utils.Constants;
+import com.invoiceApproval.entity.ResponseVO;
+
 /**
  * @author atul_jadhav
  *
@@ -29,12 +32,12 @@ public class InvoiceExceptionHandler {
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ErrorDetails handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+	public ResponseVO handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
 		logger.info("Enter InvoiceExceptionHandler handleMethodArgumentNotValid()");
-		ErrorDetails errorDetails = new ErrorDetails();
-		errorDetails.setTimestamp(new Date());
-		errorDetails.setMessage("Validation failed");
-		errorDetails.setDetails(ex.getBindingResult().getFieldError().getDefaultMessage());
+		ResponseVO errorDetails = new ResponseVO();
+		errorDetails.setCode(Constants.FAILED);
+		errorDetails.setMessage(null);
+		errorDetails.setErrorMessage(ex.getBindingResult().getFieldError().getDefaultMessage());
 		return errorDetails;
 	}
 	
@@ -47,13 +50,13 @@ public class InvoiceExceptionHandler {
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(InvoiceApprovalException.class)
-	public ErrorDetails invoiceApprovalException(InvoiceApprovalException ex)
+	public ResponseVO invoiceApprovalException(InvoiceApprovalException ex)
 	{
 		logger.info("Enter InvoiceExceptionHandler handleMethodArgumentNotValid()");
-		ErrorDetails errorDetails = new ErrorDetails();
-		errorDetails.setTimestamp(new Date());
+		ResponseVO errorDetails = new ResponseVO();
+		errorDetails.setCode(Constants.FAILED);
 		errorDetails.setMessage("Exception in application");
-		errorDetails.setDetails(ex.getErrorMessage());
+		errorDetails.setErrorMessage(ex.getErrorMessage());
 		return errorDetails;
 	}
 }
