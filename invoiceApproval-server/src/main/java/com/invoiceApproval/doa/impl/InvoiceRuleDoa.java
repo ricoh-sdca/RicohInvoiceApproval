@@ -1,6 +1,5 @@
 package com.invoiceApproval.doa.impl;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,27 +11,23 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.invoiceApproval.doa.IInvoiceApprovalRuleDoa;
+import com.invoiceApproval.doa.IInvoiceRuleDoa;
 import com.invoiceApproval.entity.InvoiceRule;
-import com.invoiceApproval.repository.InvoiceApprovalRuleRepository;
-import com.invoiceApproval.repository.OrganizationRepository;
+import com.invoiceApproval.repository.InvoiceRuleRepository;
 
 import javassist.tools.web.BadHttpRequest;
 
 @Transactional
 @Repository
-public class InvoiceApprovalRuleDoa implements IInvoiceApprovalRuleDoa {
+public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 
-	private static final Logger logger = LogManager.getLogger(InvoiceApprovalRuleDoa.class);
+	private static final Logger logger = LogManager.getLogger(InvoiceRuleDoa.class);
 	
 	@PersistenceContext	
 	private EntityManager entityManager;
 	
 	@Autowired
-    private InvoiceApprovalRuleRepository repository;
-	
-	@Autowired
-	private OrganizationRepository orgRepo;
+    private InvoiceRuleRepository repository;
 	
 	/**
 	 * This method is use to get all rules of an organization.

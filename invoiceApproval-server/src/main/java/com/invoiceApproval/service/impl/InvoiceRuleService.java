@@ -8,19 +8,19 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.invoiceApproval.doa.impl.InvoiceApprovalRuleDoa;
+import com.invoiceApproval.doa.impl.InvoiceRuleDoa;
 import com.invoiceApproval.entity.InvoiceRule;
 import com.invoiceApproval.entity.RuleDetails;
-import com.invoiceApproval.service.IInvoiceApprovalRuleService;
+import com.invoiceApproval.service.IInvoiceRuleService;
 import com.invoiceApproval.service.IInvoiceService;
 
 @Service
-public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  {
+public class InvoiceRuleService implements IInvoiceRuleService  {
 
-	private static final Logger logger = LogManager.getLogger(InvoiceApprovalRuleService.class);
+	private static final Logger logger = LogManager.getLogger(InvoiceRuleService.class);
 	
 	@Autowired
-    private InvoiceApprovalRuleDoa invoiceApprovalRuleDoa;
+    private InvoiceRuleDoa invoiceRuleDoa;
 	
 	@Autowired 
 	private IInvoiceService invoiceService;
@@ -32,7 +32,7 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
 	@Override
 	public List<InvoiceRule> findAllRules() throws Exception{
 		logger.info("InvoiceApprovalServiceImpl >> ");
-		return invoiceApprovalRuleDoa.findAllRules();
+		return invoiceRuleDoa.findAllRules();
 	}
 
 	 /**
@@ -42,7 +42,7 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
      */
 	@Override
 	public InvoiceRule find(Integer id) throws Exception{
-		return invoiceApprovalRuleDoa.find(id);
+		return invoiceRuleDoa.find(id);
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
 	public InvoiceRule create(InvoiceRule invoiceRule) throws Exception{
 		logger.info("Validating rule");
 		if(isValidRule(invoiceRule)) {
-			return invoiceApprovalRuleDoa.create(invoiceRule);
+			return invoiceRuleDoa.create(invoiceRule);
 		}else {
 			logger.info("Incorrect amount range (Duplicate / Overlapping / Missing). Kindly verify amount range and try again");
 			return null;
@@ -71,7 +71,7 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
 	@Override
 	public InvoiceRule update(Integer id, InvoiceRule invoiceApprovalRule) throws Exception{
 		if(isAllInvoicesProcessed(invoiceApprovalRule.getOrganization().getOrgId()) && isValidRule(invoiceApprovalRule)) {
-			return invoiceApprovalRuleDoa.update(id, invoiceApprovalRule);
+			return invoiceRuleDoa.update(id, invoiceApprovalRule);
 		}else {
 			return null;
 		}
@@ -83,9 +83,9 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
      */
 	@Override
 	public void delete(Integer id) throws Exception{
-		InvoiceRule obj = invoiceApprovalRuleDoa.find(id);
+		InvoiceRule obj = invoiceRuleDoa.find(id);
 		if(isAllInvoicesProcessed(obj.getOrganization().getOrgId())) {
-			invoiceApprovalRuleDoa.delete(id);
+			invoiceRuleDoa.delete(id);
 		}else {
 			logger.error("Invoices still in Pending state. Cannot delete Rule");
 		}
@@ -97,7 +97,7 @@ public class InvoiceApprovalRuleService implements IInvoiceApprovalRuleService  
 	 */
 	@Override
 	public Iterable<InvoiceRule> findAllRulesByOrgId(Integer orgId) throws Exception {
-		return invoiceApprovalRuleDoa.findAllRulesByOrgId(orgId);
+		return invoiceRuleDoa.findAllRulesByOrgId(orgId);
 	}
 
 	/**
