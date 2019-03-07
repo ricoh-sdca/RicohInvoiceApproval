@@ -1,6 +1,7 @@
 package com.invoiceApproval.service.impl;
 
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,7 @@ import com.invoiceApproval.Utils.Constants;
 import com.invoiceApproval.Utils.Messages;
 import com.invoiceApproval.doa.impl.InvoiceRuleDoa;
 import com.invoiceApproval.entity.InvoiceRule;
+import com.invoiceApproval.entity.InvoiceRuleDTO;
 import com.invoiceApproval.entity.ResponseVO;
 import com.invoiceApproval.entity.RuleDetails;
 import com.invoiceApproval.exception.InvoiceApprovalException;
@@ -37,19 +39,36 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
      * @return
      */
 	@Override
-	public List<InvoiceRule> findAllRules() throws Exception{
+	public List<InvoiceRuleDTO> findAllRules() throws Exception{
 		logger.info("InvoiceApprovalServiceImpl >> ");
-		return invoiceRuleDoa.findAllRules();
+		List<InvoiceRule> invoiceRules = invoiceRuleDoa.findAllRules();
+		List<InvoiceRuleDTO> invoiceRuleDTOs = new LinkedList<>();
+		if(invoiceRules != null && invoiceRules.size() > 0)
+		{
+			for (InvoiceRule invoiceRule : invoiceRules) {
+				
+				InvoiceRuleDTO invoiceRuleDTO = new InvoiceRuleDTO();
+				invoiceRuleDTOs.add(invoiceRuleDTO.wrapToInvoiceRuleDTO(invoiceRule));
+			}
+			return invoiceRuleDTOs;
+		}
+		return invoiceRuleDTOs;
 	}
 
 	 /**
      * This method is used for fetching Rule based on Primary Key = id 
      * @param id
      * @return
+	 * @throws Exception 
      */
 	@Override
-	public InvoiceRule find(Integer id) throws Exception{
-		return invoiceRuleDoa.find(id);
+	public InvoiceRuleDTO find(Integer id) throws Exception{
+		try {
+			InvoiceRule invoiceRule = invoiceRuleDoa.find(id);
+			return new InvoiceRuleDTO().wrapToInvoiceRuleDTO(invoiceRule); 
+		}catch (InvoiceApprovalException e) {
+			throw new InvoiceApprovalException(e.getErrorMessage());
+		}
 	}
 
 	/**
@@ -96,13 +115,19 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
      */
 	@Override
 	public ResponseVO delete(Integer id) throws Exception{
-		InvoiceRule obj = invoiceRuleDoa.find(id);
-		if(isAllInvoicesProcessed(obj.getOrganization().getOrgId())) {
-			invoiceRuleDoa.delete(id);
-			return new ResponseVO(Constants.SUCCESS,messages.get("rule.delete.success"),null);
-		}else {
-			logger.error("Invoices still in Pending state. Cannot delete Rule");
-			return new ResponseVO(Constants.FAILED, "Rule deletion failed.",messages.get("rule.status.pending"));
+		try {
+			InvoiceRule obj = invoiceRuleDoa.find(id);
+			if(isAllInvoicesProcessed(obj.getOrganization().getOrgId())) {
+				invoiceRuleDoa.delete(id);
+				return new ResponseVO(Constants.SUCCESS,messages.get("rule.delete.success"),null);
+			}else {
+				logger.info("Invoices still in Pending state. Cannot delete Rule");
+				return new ResponseVO(Constants.FAILED, null,messages.get("rule.status.pending"));
+			}
+		}
+		catch (Exception e) {
+			logger.error(messages.get("rule.error")+messages.get("rule.notFound"));
+			throw new InvoiceApprovalException(messages.get("rule.error")+messages.get("rule.notFound"));
 		}
 	}
 	
@@ -148,7 +173,7 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 			
 			//Validating Rule 
 			for (int i = 0; i < list.size()-1; i++) {
-				if(list.get(i).getToAmt() != list.get(i+1).getFromAmt()) {
+				if(0 != (list.get(i).getToAmt().compareTo(list.get(i+1).getFromAmt()))) {
 					logger.info("Missing/Duplicate/Overlapping range .."+list.get(i).getToAmt() +"-"+list.get(i+1).getFromAmt());
 					inValidRuleFlag = true;
 					break;
@@ -179,4 +204,20 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 		logger.info("Enter isAllInvoicesProcessed() of InvoiceApprovalRuleService");
 		return invoiceService.isAllInvoicesProcessed(orgId);
 	}
+
+	public InvoiceRule isRuleExists(Integer id,InvoiceRuleDTO invoiceRuleDTO) throws InvoiceApprovalException {
+		logger.info("Enter isRuleExists() of InvoiceRuleService");
+		try {
+			InvoiceRule invoiceRule = invoiceRuleDoa.find(id);
+			if(invoiceRule != null)
+			{
+				return invoiceRuleDTO.wrapForUpdate(invoiceRuleDTO,invoiceRule);
+			}
+		} catch (Exception e) {
+			logger.error(messages.get("rule.error"),e);
+			throw new InvoiceApprovalException(messages.get("rule.error")+e.getMessage());
+		}
+		return null;
+	}
+	
 }

@@ -13,12 +13,14 @@ import org.jeasy.rules.annotation.Fact;
 import org.jeasy.rules.annotation.Rule;
 import org.jeasy.rules.api.Facts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.invoiceApproval.Utils.Constants;
 import com.invoiceApproval.doa.impl.InvoiceDao;
 import com.invoiceApproval.entity.Invoice;
 import com.invoiceApproval.entity.RuleDetails;
 
+@Component
 @Rule(name="level 1",priority=1,description="Invoice Rule Engine")
 public class InvoiceRuleEngine {
 

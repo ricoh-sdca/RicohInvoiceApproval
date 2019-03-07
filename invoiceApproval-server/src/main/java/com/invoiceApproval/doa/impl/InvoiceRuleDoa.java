@@ -11,12 +11,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.invoiceApproval.Utils.Messages;
 import com.invoiceApproval.doa.IInvoiceRuleDoa;
 import com.invoiceApproval.entity.InvoiceRule;
 import com.invoiceApproval.exception.InvoiceApprovalException;
 import com.invoiceApproval.repository.InvoiceRuleRepository;
-
-import javassist.tools.web.BadHttpRequest;
 
 @Transactional
 @Repository
@@ -29,6 +28,9 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 	
 	@Autowired
     private InvoiceRuleRepository repository;
+	
+	@Autowired
+	Messages messages;
 	
 	/**
 	 * This method is use to get all rules of an organization.
@@ -50,7 +52,7 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 			return repository.getOne(id);
 		} catch (Exception e) {
 			logger.error("An exception occured in find >>",e.getCause());
-			throw new InvoiceApprovalException("Requested rule is not present.");
+			throw new InvoiceApprovalException(messages.get("rule.notFound"));
 		}
 	}
 
@@ -58,6 +60,7 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 	public InvoiceRule create(InvoiceRule invoiceRule) throws Exception {
 		try {
 			return repository.save(invoiceRule);
+			// TODO save rule history
 		} catch (Exception e) {
 			logger.error("An exception occured in create >>",e);
 		}
@@ -70,7 +73,7 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 			if (repository.existsById(id)) {
 				return repository.save(invoiceApprovalRule);
 			} else {
-				throw new BadHttpRequest();
+				throw new InvoiceApprovalException(messages.get("rule.notFound"));
 			}
 		} catch (Exception e) {
 			logger.error("An exception occured in update >>",e.getCause());

@@ -1,15 +1,18 @@
 package com.invoiceApproval.service;
 
+import java.util.List;
+
 import com.invoiceApproval.entity.InvoiceRule;
+import com.invoiceApproval.entity.InvoiceRuleDTO;
 import com.invoiceApproval.entity.ResponseVO;
 
 public interface IInvoiceRuleService {
 
-	public Iterable<InvoiceRule> findAllRules() throws Exception;
+	public List<InvoiceRuleDTO> findAllRules() throws Exception;
 	
 	public Iterable<InvoiceRule> findAllRulesByOrgId(Integer orgId) throws Exception;
 	
-	public InvoiceRule find(Integer id) throws Exception;
+	public InvoiceRuleDTO find(Integer id) throws Exception;
 	
 	public InvoiceRule create(InvoiceRule invoiceApprovalRule) throws Exception;
 	

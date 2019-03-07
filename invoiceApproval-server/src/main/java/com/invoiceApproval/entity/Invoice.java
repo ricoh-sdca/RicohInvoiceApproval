@@ -35,7 +35,7 @@ public class Invoice implements Serializable{
 	@NotNull(message="{invoice.invoiceAmt}")
 	private BigDecimal invoiceAmt;
 	
-	@Column(name="invoicee_e-mail",nullable=false)
+	@Column(name="invoicee_email",nullable=false)
 	@NotEmpty(message="{invoice.invoiceeEmail}")
 	private String invoiceeEmail;
 	

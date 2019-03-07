@@ -1,5 +1,8 @@
 package com.invoiceApproval.controller;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.validation.Valid;
 
 /**
  * This class is used for Invoice Approval Rule REST API
@@ -7,6 +10,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +24,7 @@ import com.invoiceApproval.Utils.Messages;
 import com.invoiceApproval.entity.InvoiceRule;
 import com.invoiceApproval.entity.InvoiceRuleDTO;
 import com.invoiceApproval.entity.ResponseVO;
+import com.invoiceApproval.exception.InvoiceApprovalException;
 import com.invoiceApproval.service.impl.InvoiceRuleService;
 
 import javassist.tools.web.BadHttpRequest;
@@ -43,7 +48,7 @@ public class InvoiceRuleController {
      * @return
      */
     @GetMapping(path="/rules",produces="application/json")
-    public List<InvoiceRule> findAll() {
+    public List<InvoiceRuleDTO> findAll() {
     	logger.info("Calling ");
     	try {
 			return invoiceRuleService.findAllRules();
@@ -58,10 +63,18 @@ public class InvoiceRuleController {
      * @return
      */
     @GetMapping(path="/rules/orgId/{orgId}")
-    public Iterable<InvoiceRule> findAllRulesByOrgId(@PathVariable("orgId") Integer orgId) {
+    public Iterable<InvoiceRuleDTO> findAllRulesByOrgId(@PathVariable("orgId") Integer orgId) {
     	logger.info("Calling ");
     	try {
-			return invoiceRuleService.findAllRulesByOrgId(orgId);
+    		List<InvoiceRuleDTO> list = new ArrayList<>();
+    		List<InvoiceRule> invoiceRuleList = (List<InvoiceRule>) invoiceRuleService.findAllRulesByOrgId(orgId);
+    		if(invoiceRuleList != null && !invoiceRuleList.isEmpty())
+    		{
+    			for (InvoiceRule invoiceRule : invoiceRuleList) {
+    				list.add(new InvoiceRuleDTO().wrapToInvoiceRuleDTO(invoiceRule));
+				}
+    			return list;
+    		}
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> findAll ",e.getCause());
 		}
@@ -72,15 +85,16 @@ public class InvoiceRuleController {
      * This method is used for fetching Rule based on Primary Key = id 
      * @param id
      * @return
+     * @throws InvoiceApprovalException 
      */
     @GetMapping(path="/rules/{id}")
-    public InvoiceRule find(@PathVariable("id") Integer id) {
+    public InvoiceRuleDTO find(@PathVariable("id") Integer id) throws InvoiceApprovalException{
         try {
 			return invoiceRuleService.find(id);
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> find ",e.getCause());
+			throw new InvoiceApprovalException(messages.get("rule.error")+" "+messages.get("rule.notFound"));
 		}
-		return null;
     }
 
     /**
@@ -89,7 +103,7 @@ public class InvoiceRuleController {
      * @return
      */
     @PostMapping(path="/rules",consumes = "application/json")
-    public ResponseVO create(@RequestBody InvoiceRuleDTO invoiceRuleDTO) {
+    public ResponseVO create(@Valid @RequestBody InvoiceRuleDTO invoiceRuleDTO) {
     	logger.info("Creating new rule for orgId > "+invoiceRuleDTO.getOrgId());
     	ResponseVO responseVO = null;
     	InvoiceRule invoiceRule = invoiceRuleDTO.wrapper(invoiceRuleDTO);
@@ -102,7 +116,7 @@ public class InvoiceRuleController {
     		}
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> create ",e);
-			responseVO = new ResponseVO(Constants.FAILED, null,messages.get("rule.error"));
+			responseVO = new ResponseVO(Constants.FAILED, null,messages.get("rule.error")+e.getMessage());
 		}
     	return responseVO;
     }
@@ -117,8 +131,8 @@ public class InvoiceRuleController {
 	@PutMapping(path="/rules/update/{id}",consumes = "application/json")
 	public ResponseVO update(@PathVariable("id") Integer id, @RequestBody InvoiceRuleDTO invoiceRuleDTO){
 		ResponseVO responseVO = null;
-		InvoiceRule invoiceRule = invoiceRuleDTO.wrapper(invoiceRuleDTO);
 		try {
+			InvoiceRule invoiceRule = invoiceRuleService.isRuleExists(id,invoiceRuleDTO);
 			responseVO = invoiceRuleService.update(id, invoiceRule);
 			if(null != invoiceRule) {
     			responseVO = new ResponseVO(Constants.SUCCESS, messages.get("rule.update.success"), null);
@@ -127,7 +141,7 @@ public class InvoiceRuleController {
     		}
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> update ",e.getCause());
-			responseVO = new ResponseVO(Constants.FAILED, null,messages.get("rule.update.error"));
+			responseVO = new ResponseVO(Constants.FAILED, null,messages.get("rule.error")+e.getMessage());
 		}
 		return responseVO;
 	}
@@ -140,12 +154,10 @@ public class InvoiceRuleController {
     public ResponseVO delete(@PathVariable("id") Integer id) {
     	ResponseVO responseVO = null;
     	try {
-    		invoiceRuleService.delete(id);
-    		responseVO = new ResponseVO(Constants.SUCCESS, null, null);
-    		return responseVO;
+    		return invoiceRuleService.delete(id);
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> delete ",e.getCause());
-			responseVO = new ResponseVO(Constants.FAILED, null, null);
+			responseVO = new ResponseVO(Constants.FAILED, null, messages.get("rule.error")+messages.get("rule.notFound"));
 		}
 		return responseVO;
     }
