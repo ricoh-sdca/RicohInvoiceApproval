@@ -33,6 +33,7 @@ import javassist.tools.web.BadHttpRequest;
  * This class represent invoice approval rule rest resource method. 
  */
 @RestController
+
 public class InvoiceRuleController {
 	
 	private static final Logger logger = LogManager.getLogger(InvoiceRuleController.class);
@@ -106,8 +107,9 @@ public class InvoiceRuleController {
     public ResponseVO create(@Valid @RequestBody InvoiceRuleDTO invoiceRuleDTO) {
     	logger.info("Creating new rule for orgId > "+invoiceRuleDTO.getOrgId());
     	ResponseVO responseVO = null;
-    	InvoiceRule invoiceRule = invoiceRuleDTO.wrapper(invoiceRuleDTO);
     	try {
+    		invoiceRuleService.validateInvoiceRule(invoiceRuleDTO);
+    		InvoiceRule invoiceRule = invoiceRuleDTO.wrapper(invoiceRuleDTO);
     		invoiceRule = invoiceRuleService.create(invoiceRule);
     		if(null != invoiceRule) {
     			responseVO = new ResponseVO(Constants.SUCCESS, messages.get("rule.success"), null);
@@ -132,6 +134,7 @@ public class InvoiceRuleController {
 	public ResponseVO update(@PathVariable("id") Integer id, @RequestBody InvoiceRuleDTO invoiceRuleDTO){
 		ResponseVO responseVO = null;
 		try {
+			invoiceRuleService.validateInvoiceRule(invoiceRuleDTO);
 			InvoiceRule invoiceRule = invoiceRuleService.isRuleExists(id,invoiceRuleDTO);
 			responseVO = invoiceRuleService.update(id, invoiceRule);
 			if(null != invoiceRule) {

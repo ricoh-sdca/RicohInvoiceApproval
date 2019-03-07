@@ -2,6 +2,7 @@ package com.invoiceApproval.entity;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.annotations.Parameter;
@@ -12,12 +13,10 @@ import com.invoiceApproval.Utils.Constants;
 public class InvoiceRuleDTO {
 	public Integer id;
 
-	@NotEmpty(message="{rule.ruledetails}")
 	@Type(type = "com.invoiceApproval.entity.types.JsonType", parameters = {
 			@Parameter(name = "classType", value = "com.invoiceApproval.entity.Rule") })
 	public Rule rule;
 
-	@NotEmpty(message="Rule status required")
 	private String ruleStatus;
 	
 	private String vendor;

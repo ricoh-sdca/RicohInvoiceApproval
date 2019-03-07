@@ -103,5 +103,16 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 		}
 		return null;
 	}
-
+	
+	@Override
+	public InvoiceRule getRuleByIdAndOrgId(Integer orgId,Integer ruleId)
+	{
+		try {
+			String hql = "FROM InvoiceRule as ipr WHERE ipr.organization.orgId = :orgId and ipr.id=:ruleId";
+			return (InvoiceRule) entityManager.createQuery(hql).setParameter("orgId", orgId).setParameter("ruleId", ruleId).getResultList();
+		} catch (Exception e) {
+			logger.error("An exception occured in findAllRulesByOrgId >>",e.getCause());
+		}
+		return null;
+	}
 }

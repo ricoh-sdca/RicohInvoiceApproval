@@ -101,11 +101,11 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 			if(updatedRule != null) 
 				new ResponseVO(Constants.SUCCESS, messages.get("rule.update.success"), null);
 			else
-				new ResponseVO(Constants.FAILED, "Rule updation failed.", messages.get("rule.error"));
+				new ResponseVO(Constants.FAILED, null, messages.get("rule.error"));
 		}else {
-			return new ResponseVO(Constants.FAILED, "Rule updation failed.", messages.get("rule.status.pending"));
+			return new ResponseVO(Constants.FAILED, null, messages.get("rule.status.pending"));
 		}
-		return new ResponseVO(Constants.FAILED, "Rule updation failed.", messages.get("rule.error"));
+		return new ResponseVO(Constants.FAILED, null, messages.get("rule.error"));
 	}
 	
 	 /**
@@ -208,16 +208,27 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 	public InvoiceRule isRuleExists(Integer id,InvoiceRuleDTO invoiceRuleDTO) throws InvoiceApprovalException {
 		logger.info("Enter isRuleExists() of InvoiceRuleService");
 		try {
-			InvoiceRule invoiceRule = invoiceRuleDoa.find(id);
-			if(invoiceRule != null)
-			{
+			InvoiceRule invoiceRule = invoiceRuleDoa.getRuleByIdAndOrgId(id,invoiceRuleDTO.getOrgId());
+			if(invoiceRule!= null)
 				return invoiceRuleDTO.wrapForUpdate(invoiceRuleDTO,invoiceRule);
-			}
+			else
+				throw new InvoiceApprovalException(messages.get("rule.notFound"));
 		} catch (Exception e) {
 			logger.error(messages.get("rule.error"),e);
-			throw new InvoiceApprovalException(messages.get("rule.error")+e.getMessage());
+			throw new InvoiceApprovalException(e.getMessage());
 		}
-		return null;
 	}
-	
+	public void validateInvoiceRule(InvoiceRuleDTO invoiceRuleDTO) throws InvoiceApprovalException
+	{
+		if(invoiceRuleDTO.getOrgId() == null || "".equals(invoiceRuleDTO.getOrgId()+""))
+			throw new InvoiceApprovalException(messages.get("rule.orgId"));
+		else if(invoiceRuleDTO.getRule()== null)
+			throw new InvoiceApprovalException(messages.get("rule.ruledetails"));
+		else if(invoiceRuleDTO.getRule().getType() == null || "".equals(invoiceRuleDTO.getRule().getType()))
+			throw new InvoiceApprovalException(messages.get("rule.ruledetails"));
+		else if(invoiceRuleDTO.getRule().getRuleDetails() == null)
+			throw new InvoiceApprovalException(messages.get("rule.ruledetails"));
+		else if(invoiceRuleDTO.getRuleStatus() == null || "".equals(invoiceRuleDTO.getRuleStatus()))
+			throw new InvoiceApprovalException(messages.get("rule.status"));
+	}
 }
