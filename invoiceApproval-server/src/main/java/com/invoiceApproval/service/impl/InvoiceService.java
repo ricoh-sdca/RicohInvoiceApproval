@@ -44,9 +44,9 @@ public class InvoiceService implements IInvoiceService {
 	 * @param orgId
 	 */
 	@Override
-	public boolean isAllInvoicesProcessed(Integer orgId) {
+	public boolean isAllInvoicesProcessed(Integer orgId,String invoiceStatus) {
 		logger.info("Enter isAllInvoicesProcessed() of an InvoiceService");
-		return invoiceDao.isAllInvoicesProcessed(orgId);
+		return invoiceDao.isAllInvoicesProcessed(orgId,invoiceStatus);
 	}
 	
 	/**

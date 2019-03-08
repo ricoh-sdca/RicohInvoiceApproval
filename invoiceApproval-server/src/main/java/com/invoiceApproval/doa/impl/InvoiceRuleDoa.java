@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.invoiceApproval.Utils.Constants;
 import com.invoiceApproval.Utils.Messages;
 import com.invoiceApproval.doa.IInvoiceRuleDoa;
 import com.invoiceApproval.entity.InvoiceRule;
@@ -70,11 +71,7 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 	@Override
 	public InvoiceRule update(Integer id, InvoiceRule invoiceApprovalRule) throws Exception {
 		try {
-			if (repository.existsById(id)) {
 				return repository.save(invoiceApprovalRule);
-			} else {
-				throw new InvoiceApprovalException(messages.get("rule.notFound"));
-			}
 		} catch (Exception e) {
 			logger.error("An exception occured in update >>",e.getCause());
 		}
@@ -82,9 +79,9 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 	}
 
 	@Override
-	public void delete(Integer id) throws Exception {
+	public void delete(InvoiceRule invoiceRule) throws Exception {
 		try {
-			repository.deleteById(id);
+			repository.save(invoiceRule);
 		} catch (Exception e) {
 			logger.error("An exception occured in delete >>",e.getCause());
 		}
@@ -94,7 +91,7 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 	@Override
 	public Iterable<InvoiceRule> findAllRulesByOrgId(Integer orgId) throws Exception {
 		try {
-			String hql = "FROM InvoiceRule as ipr WHERE ipr.organization.orgId = :orgId and ipr.ruleStatus='active'";
+			String hql = "FROM InvoiceRule as ipr WHERE ipr.organization.orgId = :orgId and ipr.ruleStatus='Y'";
 			List<InvoiceRule> invoiceApprovalRules = entityManager.createQuery(hql).setParameter("orgId", orgId)
 			              .getResultList();
 			return invoiceApprovalRules;
@@ -104,12 +101,17 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public InvoiceRule getRuleByIdAndOrgId(Integer orgId,Integer ruleId)
+	public InvoiceRule getRuleByIdAndOrgId(Integer ruleId,Integer orgId)
 	{
 		try {
-			String hql = "FROM InvoiceRule as ipr WHERE ipr.organization.orgId = :orgId and ipr.id=:ruleId";
-			return (InvoiceRule) entityManager.createQuery(hql).setParameter("orgId", orgId).setParameter("ruleId", ruleId).getResultList();
+			String hql = "FROM InvoiceRule as ipr WHERE ipr.organization.orgId = :orgId and ipr.id=:ruleId and ipr.ruleStatus=:status";
+			List<InvoiceRule> invoiceRules = entityManager.createQuery(hql).setParameter("orgId", orgId).setParameter("ruleId", ruleId).setParameter("status", Constants.ACTIVE).
+					getResultList();
+			if(invoiceRules != null && invoiceRules.size() > 0) {
+				return invoiceRules.get(0);
+			}
 		} catch (Exception e) {
 			logger.error("An exception occured in findAllRulesByOrgId >>",e.getCause());
 		}

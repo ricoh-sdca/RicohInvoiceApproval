@@ -14,7 +14,7 @@ public interface IInvoiceRuleDoa {
 	
 	public InvoiceRule update(Integer id,InvoiceRule invoiceApprovalRule) throws Exception;
 	
-	public void delete(Integer id) throws Exception;
+	public void delete(InvoiceRule nvoiceRule) throws Exception;
 	
 	public InvoiceRule getRuleByIdAndOrgId(Integer orgId,Integer ruleId);
 }

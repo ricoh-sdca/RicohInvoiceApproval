@@ -20,6 +20,6 @@ public interface UserRepository extends JpaRepository<User, String> {
 	 * @param password
 	 * @return User
 	 */
-	@Query("select u from User u where u.userName =?1 and u.password =?2 and u.userStatus='active'")
-	public User findUserByCredential(String userName,String password);
+	@Query("select u from User u where u.userName =?1 and u.password =?2 and u.userStatus=?3")
+	public User findUserByCredential(String userName,String password,String status);
 }

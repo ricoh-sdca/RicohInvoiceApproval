@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.invoiceApproval.Utils.Constants;
 import com.invoiceApproval.doa.ILoginDAO;
 import com.invoiceApproval.entity.User;
 import com.invoiceApproval.repository.UserRepository;
@@ -29,7 +30,7 @@ public class LoginDao implements ILoginDAO {
 	@Override
 	public boolean validateUser(String userName,String password){
 		LOGGER.info("Enter LoginDao validateUser()");
-		User user = repository.findUserByCredential(userName, password);
+		User user = repository.findUserByCredential(userName, password,Constants.ACTIVE);
 		return user != null ? true : false;
 	}
 }

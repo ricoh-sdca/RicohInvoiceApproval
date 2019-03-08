@@ -30,9 +30,9 @@ public class InvoiceDao implements IInvoiceDao {
 	 * @param orgId
 	 */
 	@Override
-	public boolean isAllInvoicesProcessed(Integer orgId) {
-		String query = "select i from Invoice i where i.organization.orgId=:orgId and i.invoiceStatus='pending'";
-		int count = manager.createQuery(query).setParameter("orgId", orgId).getResultList().size();
+	public boolean isAllInvoicesProcessed(Integer orgId,String invoiceStatus) {
+		String query = "select i from Invoice i where i.organization.orgId=:orgId and i.invoiceStatus=:invoiceStatus";
+		int count = manager.createQuery(query).setParameter("orgId", orgId).setParameter("invoiceStatus", invoiceStatus).getResultList().size();
 		return count > 0 ? false : true;
 	}
 

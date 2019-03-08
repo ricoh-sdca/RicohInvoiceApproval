@@ -3,7 +3,7 @@ package com.invoiceApproval.entity;
 import java.util.Date;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -17,12 +17,14 @@ public class InvoiceRuleDTO {
 			@Parameter(name = "classType", value = "com.invoiceApproval.entity.Rule") })
 	public Rule rule;
 
+	@NotBlank(message="{rule.status}")
 	private String ruleStatus;
 	
 	private String vendor;
 	
 	private String mode;
 
+	@NotNull(message="{rule.orgId}")
 	private Integer orgId;
 	
 	private String createdBy;
@@ -125,6 +127,9 @@ public class InvoiceRuleDTO {
 		// Rule
 		invoiceRule.setRule(invoiceRuleDTO.getRule());
 		
+		invoiceRule.setMode(invoiceRuleDTO.getMode());
+		invoiceRule.setVendor(invoiceRuleDTO.getVendor());
+		
 		// Created and Updated by / at
 		invoiceRule.setCreatedAt(invoiceRuleDTO.getCreatedAt() != null ? invoiceRuleDTO.getCreatedAt() : new Date());
 		invoiceRule.setCreatedBy(invoiceRuleDTO.getCreatedBy() != null ? invoiceRuleDTO.getCreatedBy() : Constants.SYSTEM);
@@ -155,6 +160,11 @@ public class InvoiceRuleDTO {
 			invoiceRule.setRuleStatus(invoiceRuleDTO.getRuleStatus());
 		if(invoiceRuleDTO.getVendor() != null && !"".equals(invoiceRuleDTO.getVendor()))
 			invoiceRule.setVendor(invoiceRuleDTO.getVendor());
+		
+		//invoiceRule.setCreatedAt(new Date());
+		//invoiceRule.setCreatedBy(invoiceRuleDTO.getCreatedBy() != null ? invoiceRuleDTO.getCreatedBy() : Constants.SYSTEM);
+		invoiceRule.setUpdatedAt(new Date());
+		invoiceRule.setUpdatedBy((invoiceRuleDTO.getUpdatedBy() != "" ? invoiceRuleDTO.getUpdatedBy() : Constants.SYSTEM));
 			
 		return invoiceRule;
 	}

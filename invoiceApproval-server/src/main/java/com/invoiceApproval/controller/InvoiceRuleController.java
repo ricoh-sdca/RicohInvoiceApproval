@@ -10,7 +10,6 @@ import javax.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +32,6 @@ import javassist.tools.web.BadHttpRequest;
  * This class represent invoice approval rule rest resource method. 
  */
 @RestController
-
 public class InvoiceRuleController {
 	
 	private static final Logger logger = LogManager.getLogger(InvoiceRuleController.class);
@@ -136,8 +134,13 @@ public class InvoiceRuleController {
 		try {
 			invoiceRuleService.validateInvoiceRule(invoiceRuleDTO);
 			InvoiceRule invoiceRule = invoiceRuleService.isRuleExists(id,invoiceRuleDTO);
-			responseVO = invoiceRuleService.update(id, invoiceRule);
-			if(null != invoiceRule) {
+			invoiceRuleService.update(id, invoiceRule);
+			
+			InvoiceRule newRule = new InvoiceRule();
+			newRule.setOrganization(invoiceRule.getOrganization());
+			newRule = invoiceRuleService.create(invoiceRuleDTO.wrapForUpdate(invoiceRuleDTO,newRule));
+			
+			if(newRule != null) {
     			responseVO = new ResponseVO(Constants.SUCCESS, messages.get("rule.update.success"), null);
     		}else {
     			responseVO = new ResponseVO(Constants.FAILED, null,messages.get("rule.invalid"));

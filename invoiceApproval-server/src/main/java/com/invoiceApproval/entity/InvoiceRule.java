@@ -38,7 +38,7 @@ public class InvoiceRule implements Serializable {
 	@Column(name = "rule")
 	public Rule rule;
 
-	@Column(name = "rule_status")
+	@Column(name = "status")
 	private String ruleStatus;
 	
 	@Column

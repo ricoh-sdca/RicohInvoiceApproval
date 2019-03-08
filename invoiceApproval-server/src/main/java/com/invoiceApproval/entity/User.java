@@ -45,7 +45,7 @@ public class User implements Serializable {
 	@Column(name="approval_level")
     private String approvalLevel;
 	
-	@Column(name="user_status")
+	@Column(name="status")
     private String userStatus;
 	
 	@Column(name="created_by")

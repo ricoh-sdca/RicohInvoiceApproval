@@ -6,6 +6,6 @@ import com.invoiceApproval.exception.InvoiceApprovalException;
 
 public interface IInvoiceService {
 	
-	public boolean isAllInvoicesProcessed(Integer orgId);
+	public boolean isAllInvoicesProcessed(Integer orgId,String invoiceStatus);
 	public ResponseVO saveInvoiceDetails(Invoice invoice) throws InvoiceApprovalException;
 }

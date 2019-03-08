@@ -44,7 +44,7 @@ public class Organization implements Serializable {
     @Column(name = "properties")
 	private OrgProperties orgProps;
 	
-	@Column
+	@Column(name = "status")
 	private String status;
 	
 	@Column(name="created_by")

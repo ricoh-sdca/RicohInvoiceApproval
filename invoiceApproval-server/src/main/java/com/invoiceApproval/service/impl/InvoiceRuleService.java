@@ -80,7 +80,13 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 	public InvoiceRule create(InvoiceRule invoiceRule) throws Exception{
 		logger.info("Validating rule");
 		if(isValidRule(invoiceRule)) {
-			return invoiceRuleDoa.create(invoiceRule);
+			InvoiceRule createdRule = invoiceRuleDoa.create(invoiceRule);
+			if(createdRule != null) {
+				return createdRule;
+			}
+			else {
+				throw new InvoiceApprovalException(messages.get("rule.invalid"));
+			}
 		}else {
 			logger.info("Incorrect amount range (Duplicate / Overlapping / Missing). Kindly verify amount range and try again");
 			throw new InvoiceApprovalException(messages.get("rule.invalid"));
@@ -96,16 +102,18 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
      */
 	@Override
 	public ResponseVO update(Integer id, InvoiceRule invoiceApprovalRule) throws Exception{
-		if(isAllInvoicesProcessed(invoiceApprovalRule.getOrganization().getOrgId()) && isValidRule(invoiceApprovalRule)) {
+		if(isAllInvoicesProcessed(invoiceApprovalRule.getOrganization().getOrgId(),Constants.PENDING) && isValidRule(invoiceApprovalRule)) {
+			invoiceApprovalRule.setRuleStatus(Constants.INACTIVE);
 			InvoiceRule updatedRule = invoiceRuleDoa.update(id, invoiceApprovalRule);
-			if(updatedRule != null) 
-				new ResponseVO(Constants.SUCCESS, messages.get("rule.update.success"), null);
-			else
-				new ResponseVO(Constants.FAILED, null, messages.get("rule.error"));
+			if(updatedRule != null) {
+				return new ResponseVO(Constants.SUCCESS, messages.get("rule.update.success"), null);
+			}
+			else {
+				throw new InvoiceApprovalException(messages.get("rule.error"));
+			}
 		}else {
-			return new ResponseVO(Constants.FAILED, null, messages.get("rule.status.pending"));
+			throw new InvoiceApprovalException(messages.get("rule.status.pending"));
 		}
-		return new ResponseVO(Constants.FAILED, null, messages.get("rule.error"));
 	}
 	
 	 /**
@@ -116,9 +124,10 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 	@Override
 	public ResponseVO delete(Integer id) throws Exception{
 		try {
-			InvoiceRule obj = invoiceRuleDoa.find(id);
-			if(isAllInvoicesProcessed(obj.getOrganization().getOrgId())) {
-				invoiceRuleDoa.delete(id);
+			InvoiceRule invoiceRule = invoiceRuleDoa.find(id);
+			if(isAllInvoicesProcessed(invoiceRule.getOrganization().getOrgId(),Constants.PENDING)) {
+				invoiceRule.setRuleStatus(Constants.INACTIVE);
+				invoiceRuleDoa.delete(invoiceRule);
 				return new ResponseVO(Constants.SUCCESS,messages.get("rule.delete.success"),null);
 			}else {
 				logger.info("Invoices still in Pending state. Cannot delete Rule");
@@ -189,7 +198,7 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 		}
 		else
 		{
-			logger.error("Invoice rule details not found..");
+			logger.error(messages.get("rule.notFound"));
 			return false;
 		}
 	}
@@ -200,19 +209,19 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 	 * @return
 	 * @throws Exception 
 	 */
-	public boolean isAllInvoicesProcessed(Integer orgId) throws Exception {
+	public boolean isAllInvoicesProcessed(Integer orgId,String invoiceStatus) throws Exception {
 		logger.info("Enter isAllInvoicesProcessed() of InvoiceApprovalRuleService");
-		return invoiceService.isAllInvoicesProcessed(orgId);
+		return invoiceService.isAllInvoicesProcessed(orgId,invoiceStatus);
 	}
 
 	public InvoiceRule isRuleExists(Integer id,InvoiceRuleDTO invoiceRuleDTO) throws InvoiceApprovalException {
 		logger.info("Enter isRuleExists() of InvoiceRuleService");
 		try {
 			InvoiceRule invoiceRule = invoiceRuleDoa.getRuleByIdAndOrgId(id,invoiceRuleDTO.getOrgId());
-			if(invoiceRule!= null)
-				return invoiceRuleDTO.wrapForUpdate(invoiceRuleDTO,invoiceRule);
-			else
+			if(invoiceRule == null)
 				throw new InvoiceApprovalException(messages.get("rule.notFound"));
+			else
+				return invoiceRule;
 		} catch (Exception e) {
 			logger.error(messages.get("rule.error"),e);
 			throw new InvoiceApprovalException(e.getMessage());
