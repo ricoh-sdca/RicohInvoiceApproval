@@ -102,35 +102,29 @@ public class InvoiceService implements IInvoiceService {
 	}
 	
 	/**
-	 * 
+	 * This method returns all pending invoices of a login user.
+	 * @return List
+	 * @param String 
 	 */
 	@Override
-	public ModelMap getAllInvoices(String userName,String invoiceStatus) throws InvoiceApprovalException {
+	public List<InvoiceDTO> getAllInvoices(String approvalLevel,String invoiceStatus) throws InvoiceApprovalException {
 		logger.info("Enter getUserPendingInvoices() of InvoiceService");
-		ModelMap modelMap = new ModelMap();
-		ResponseVO responseVO = null;
+		List<InvoiceDTO> dtosList = null;
 		try {
-			List<Invoice> invoiceList = invoiceDao.getAllInvoices(userName,invoiceStatus);
+			List<Invoice> invoiceList = invoiceDao.getAllInvoices(approvalLevel,invoiceStatus);
 			if(invoiceList != null && invoiceList.size() > 0) {
-				List<InvoiceDTO> dtos = new LinkedList<>();
+				dtosList = new LinkedList<>();
 				for (Invoice invoice : invoiceList) {
 					InvoiceDTO dto = new InvoiceDTO();
-					dtos.add(dto.wrapToDto(invoice));
+					dtosList.add(dto.wrapToDto(invoice));
 				}
-				responseVO = new ResponseVO(Constants.SUCCESS, null, null);
-				modelMap.put("response", responseVO);
-				modelMap.put("ruleDetails", invoiceList);
-				return modelMap;
-			}
-			else {
-				
-				return modelMap;
+				return dtosList;
 			}
 		} catch (Exception e) {
 			logger.error(messages.get("invoice.error"),e);
-			
-			return modelMap;
+			throw new InvoiceApprovalException(messages.get("invoice.error")+e.getMessage());
 		}
+		return null;
 	}
 
 	public ModelMap approveInvoice(String invoiceNumber) {
@@ -165,4 +159,5 @@ public class InvoiceService implements IInvoiceService {
 			return modelMap;
 		}
 	*/}
+
 }

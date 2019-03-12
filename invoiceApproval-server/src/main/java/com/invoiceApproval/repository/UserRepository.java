@@ -28,4 +28,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 	@Query("select u from User u where u.approvalLevel=?1 and u.userStatus=?2")
 	public List<User> getUsersByApprovalLevel(String approverLevel,String status);
 	
+	@Query("select u from User u where u.userName=?1 and u.userStatus=?2")
+	public User getUserByName(String userName,String status);
+	
 }

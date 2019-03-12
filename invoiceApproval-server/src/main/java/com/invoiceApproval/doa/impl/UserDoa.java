@@ -29,4 +29,10 @@ public class UserDoa implements IUserDoa{
 		return repository.getUsersByApprovalLevel(approverLevel, Constants.ACTIVE);
 	}
 
+	@Override
+	public User getUserByName(String userName) {
+		LOGGER.info("calling getUserByName() of UserDoa");
+		return repository.getUserByName(userName, Constants.ACTIVE);
+	}
+
 }

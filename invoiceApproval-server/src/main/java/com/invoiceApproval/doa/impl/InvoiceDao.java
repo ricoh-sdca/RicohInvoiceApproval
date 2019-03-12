@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.invoiceApproval.Utils.Constants;
 import com.invoiceApproval.doa.IInvoiceDao;
 import com.invoiceApproval.entity.Invoice;
 import com.invoiceApproval.repository.InvoiceRepository;
@@ -50,13 +51,13 @@ public class InvoiceDao implements IInvoiceDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Invoice> getAllInvoices(String userName,String invoiceStatus) {
+	public List<Invoice> getAllInvoices(String approvalLevel,String invoiceStatus) {
 		String query = "select i from Invoice i , User u where ";
-				if(userName != null ) {
-					query += "i.organization.orgId = u.organization.orgId and u.userName ='"+userName+"' and u.userStatus='Active' "
+				if(approvalLevel != null ) {
+					query += "i.organization.orgId = u.organization.orgId and u.approvalLevel ='"+approvalLevel+"' and u.userStatus='"+Constants.ACTIVE+"' "
 							+ "and i.currApprovalLevel = u.approvalLevel and ";
 				}else {
-					query +="i.organization.orgId = u.organization.orgId and u.userStatus='Active' and ";
+					query +="i.organization.orgId = u.organization.orgId and u.userStatus='"+Constants.ACTIVE+"' and ";
 				}if(invoiceStatus != null) {
 					query +="i.invoiceStatus='"+invoiceStatus+"' order by i.createdAt asc";
 				}

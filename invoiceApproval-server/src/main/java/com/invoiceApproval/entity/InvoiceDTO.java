@@ -128,6 +128,8 @@ public class InvoiceDTO {
 		dto.setOrgId(invoice.getOrganization().getOrgId());
 		dto.setVendor(invoice.getVendor());
 		dto.setInvoiceeEmail(invoice.getInvoiceeEmail());
+		dto.setCurrApprovalLevel(invoice.getCurrApprovalLevel());
+		dto.setFinalApprovalLevel(invoice.getFinalApprovalLevel());
 		return dto;
 	}
 }
