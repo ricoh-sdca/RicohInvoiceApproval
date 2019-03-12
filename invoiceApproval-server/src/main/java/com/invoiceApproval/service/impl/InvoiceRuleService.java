@@ -103,14 +103,17 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
      */
 	@Override
 	public ResponseVO update(Integer id, InvoiceRule invoiceApprovalRule) throws Exception{
-		if(isAllInvoicesProcessed(invoiceApprovalRule.getOrganization().getOrgId(),Constants.PENDING) && isValidRule(invoiceApprovalRule)) {
-			invoiceApprovalRule.setRuleStatus(Constants.INACTIVE);
-			InvoiceRule updatedRule = invoiceRuleDoa.update(id, invoiceApprovalRule);
-			if(updatedRule != null) {
-				return new ResponseVO(Constants.SUCCESS, messages.get("rule.update.success"), null);
-			}
-			else {
-				throw new InvoiceApprovalException(messages.get("rule.error"));
+		if(isAllInvoicesProcessed(invoiceApprovalRule.getOrganization().getOrgId(),Constants.PENDING)){	
+			if(isValidRule(invoiceApprovalRule)) {
+				invoiceApprovalRule.setRuleStatus(Constants.INACTIVE);
+				InvoiceRule updatedRule = invoiceRuleDoa.update(id, invoiceApprovalRule);
+				if(updatedRule != null) {
+					return new ResponseVO(Constants.SUCCESS, messages.get("rule.update.success"), null);
+				}else {
+					throw new InvoiceApprovalException(messages.get("rule.error"));
+				}
+			} else {
+				throw new InvoiceApprovalException(messages.get("rule.invalid"));
 			}
 		}else {
 			throw new InvoiceApprovalException(messages.get("rule.status.pending"));
@@ -136,8 +139,8 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 			}
 		}
 		catch (Exception e) {
-			logger.error(messages.get("rule.error")+messages.get("rule.notFound"));
-			throw new InvoiceApprovalException(messages.get("rule.error")+messages.get("rule.notFound"));
+			logger.error(messages.get("rule.error"),e);
+			return new ResponseVO(Constants.FAILED,null,messages.get("rule.error")+messages.get("rule.notFound"));
 		}
 	}
 	
