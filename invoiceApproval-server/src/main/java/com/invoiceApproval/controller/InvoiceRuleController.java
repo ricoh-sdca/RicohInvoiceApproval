@@ -10,6 +10,8 @@ import javax.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +34,7 @@ import javassist.tools.web.BadHttpRequest;
  * This class represent invoice approval rule rest resource method. 
  */
 @RestController
+@CrossOrigin(origins="http://localhost:4200")
 public class InvoiceRuleController {
 	
 	private static final Logger logger = LogManager.getLogger(InvoiceRuleController.class);
@@ -47,14 +50,31 @@ public class InvoiceRuleController {
      * @return
      */
     @GetMapping(path="/rules",produces="application/json")
-    public List<InvoiceRuleDTO> findAll() {
+    public ModelMap findAll() {
     	logger.info("Calling ");
+    	ResponseVO responseVO = null;
+    	ModelMap map = new ModelMap();
     	try {
-			return invoiceRuleService.findAllRules();
+    		List<InvoiceRuleDTO> ruleDataList = invoiceRuleService.findAllRules();
+    		if(ruleDataList != null && ruleDataList.size() > 0) {
+    			responseVO = new ResponseVO(Constants.SUCCESS,null, null);
+    			map.put("response", responseVO);
+    			map.put("ruleDetails", ruleDataList);
+    			return map;
+    		}
+    		else {
+    			responseVO = new ResponseVO(Constants.FAILED,null, messages.get("rule.get.failed"));
+    			map.put("response", responseVO);
+    			map.put("ruleDetails", null);
+    			return map;
+    		}
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> findAll ",e.getCause());
+			responseVO = new ResponseVO(Constants.FAILED,null, messages.get("rule.get.failed"));
+			map.put("response", responseVO);
+			map.put("ruleDetails", null);
+			return map;
 		}
-		return null;
     }
 
     /**
@@ -102,23 +122,28 @@ public class InvoiceRuleController {
      * @return
      */
     @PostMapping(path="/rules",consumes = "application/json")
-    public ResponseVO create(@Valid @RequestBody InvoiceRuleDTO invoiceRuleDTO) {
+    public ModelMap create(@Valid @RequestBody InvoiceRuleDTO invoiceRuleDTO) {
     	logger.info("Creating new rule for orgId > "+invoiceRuleDTO.getOrgId());
     	ResponseVO responseVO = null;
+    	ModelMap map = new ModelMap();
     	try {
     		invoiceRuleService.validateInvoiceRule(invoiceRuleDTO);
     		InvoiceRule invoiceRule = invoiceRuleDTO.wrapper(invoiceRuleDTO);
     		invoiceRule = invoiceRuleService.create(invoiceRule);
     		if(null != invoiceRule) {
     			responseVO = new ResponseVO(Constants.SUCCESS, messages.get("rule.success"), null);
+    			map.put("response", responseVO);
+    			map.put("ruleDetails", invoiceRule);
     		}else {
     			responseVO = new ResponseVO(Constants.FAILED, null,messages.get("rule.invalid"));
+    			map.put("response", responseVO);
     		}
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> create ",e);
 			responseVO = new ResponseVO(Constants.FAILED, null,messages.get("rule.error")+e.getMessage());
+			map.put("response", responseVO);
 		}
-    	return responseVO;
+    	return map;
     }
 
     /**

@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name="user_tbl")
 public class User implements Serializable {
@@ -64,6 +66,7 @@ public class User implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name="org_id")
+	@JsonBackReference
     private Organization organization;
     
     

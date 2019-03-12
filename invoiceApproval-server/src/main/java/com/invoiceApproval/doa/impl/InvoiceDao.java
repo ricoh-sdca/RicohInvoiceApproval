@@ -1,5 +1,7 @@
 package com.invoiceApproval.doa.impl;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -44,6 +46,21 @@ public class InvoiceDao implements IInvoiceDao {
 	public Invoice saveInvoiceDetails(Invoice invoice) {
 		logger.info("Calling saveInvoiceDetails .. ");
 		return repository.save(invoice);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Invoice> getAllInvoices(String userName,String invoiceStatus) {
+		String query = "select i from Invoice i , User u where ";
+				if(userName != null ) {
+					query += "i.organization.orgId = u.organization.orgId and u.userName ='"+userName+"' and u.userStatus='Active' "
+							+ "and i.currApprovalLevel = u.approvalLevel and ";
+				}else {
+					query +="i.organization.orgId = u.organization.orgId and u.userStatus='Active' and ";
+				}if(invoiceStatus != null) {
+					query +="i.invoiceStatus='"+invoiceStatus+"' order by i.createdAt asc";
+				}
+		 return manager.createQuery(query).getResultList()	;
 	}
 
 }

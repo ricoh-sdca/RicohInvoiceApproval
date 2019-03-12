@@ -17,6 +17,9 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name="org_tbl")
 public class Organization implements Serializable {
@@ -61,13 +64,18 @@ public class Organization implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 	
+	
+	
 	@OneToMany(mappedBy="organization")
+	@JsonManagedReference
 	private Set<InvoiceRule> approvalRules;
 	
 	@OneToMany(mappedBy="organization")
+	@JsonManagedReference
 	private Set<User> users;
 	
 	@OneToMany(mappedBy="organization")
+	@JsonManagedReference
 	private Set<Invoice> invoiceDetails;
 	
 	

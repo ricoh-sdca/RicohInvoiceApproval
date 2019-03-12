@@ -17,6 +17,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name="invoice_tbl")
 public class Invoice implements Serializable{
@@ -87,6 +89,7 @@ public class Invoice implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name="org_id")
+	@JsonBackReference
 	private Organization organization;
 	
 	public String getInvoiceNumber() {

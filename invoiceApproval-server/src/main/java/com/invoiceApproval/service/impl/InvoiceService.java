@@ -1,5 +1,8 @@
 package com.invoiceApproval.service.impl;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -11,11 +14,13 @@ import org.jeasy.rules.core.DefaultRulesEngine;
 import org.jeasy.rules.core.RuleProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 
 import com.invoiceApproval.Utils.Constants;
 import com.invoiceApproval.Utils.Messages;
 import com.invoiceApproval.doa.impl.InvoiceDao;
 import com.invoiceApproval.entity.Invoice;
+import com.invoiceApproval.entity.InvoiceDTO;
 import com.invoiceApproval.entity.InvoiceRule;
 import com.invoiceApproval.entity.ResponseVO;
 import com.invoiceApproval.exception.InvoiceApprovalException;
@@ -97,4 +102,70 @@ public class InvoiceService implements IInvoiceService {
 		}
 		return new ResponseVO(Constants.SUCCESS, messages.get("invoice.success"),null);
 	}
+	
+	@Override
+	public ModelMap getAllInvoices(String userName,String invoiceStatus) throws InvoiceApprovalException {
+		logger.info("Enter getUserPendingInvoices() of InvoiceService");
+		ModelMap modelMap = new ModelMap();
+		ResponseVO responseVO = null;
+		try {
+			List<Invoice> invoiceList = invoiceDao.getAllInvoices(userName,invoiceStatus);
+			if(invoiceList != null && invoiceList.size() > 0) {
+				List<InvoiceDTO> dtos = new LinkedList<>();
+				for (Invoice invoice : invoiceList) {
+					InvoiceDTO dto = new InvoiceDTO();
+					dtos.add(dto.wrapToDto(invoice));
+				}
+				responseVO = new ResponseVO(Constants.SUCCESS, null, null);
+				modelMap.put("response", responseVO);
+				modelMap.put("ruleDetails", invoiceList);
+				return modelMap;
+			}
+			else {
+				responseVO = new ResponseVO(Constants.FAILED, null, null);
+				modelMap.put("response", responseVO);
+				modelMap.put("ruleDetails", null);
+				return modelMap;
+			}
+		} catch (Exception e) {
+			logger.error(messages.get("invoice.error"),e);
+			responseVO = new ResponseVO(Constants.FAILED, null, messages.get("invoice.error")+e.getMessage());
+			modelMap.put("response", responseVO);
+			modelMap.put("ruleDetails", null);
+			return modelMap;
+		}
+	}
+
+	public ModelMap approveInvoice(String invoiceNumber) {
+		return null;/*
+		logger.info("Enter getUserPendingInvoices() of InvoiceService");
+		ModelMap modelMap = new ModelMap();
+		ResponseVO responseVO = null;
+		try {
+			List<Invoice> invoiceList = invoiceDao.approveInvoice(invoiceNumber);
+			if(invoiceList != null && invoiceList.size() > 0) {
+				List<InvoiceDTO> dtos = new LinkedList<>();
+				for (Invoice invoice : invoiceList) {
+					InvoiceDTO dto = new InvoiceDTO();
+					dtos.add(dto.wrapToDto(invoice));
+				}
+				responseVO = new ResponseVO(Constants.SUCCESS, null, null);
+				modelMap.put("response", responseVO);
+				modelMap.put("ruleDetails", invoiceList);
+				return modelMap;
+			}
+			else {
+				responseVO = new ResponseVO(Constants.FAILED, null, null);
+				modelMap.put("response", responseVO);
+				modelMap.put("ruleDetails", null);
+				return modelMap;
+			}
+		} catch (Exception e) {
+			logger.error(messages.get("invoice.error"),e);
+			responseVO = new ResponseVO(Constants.FAILED, null, messages.get("invoice.error")+e.getMessage());
+			modelMap.put("response", responseVO);
+			modelMap.put("ruleDetails", null);
+			return modelMap;
+		}
+	*/}
 }

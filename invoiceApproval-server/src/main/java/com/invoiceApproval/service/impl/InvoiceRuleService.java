@@ -1,5 +1,6 @@
 package com.invoiceApproval.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -239,5 +240,27 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 			throw new InvoiceApprovalException(messages.get("rule.ruledetails"));
 		else if(invoiceRuleDTO.getRuleStatus() == null || "".equals(invoiceRuleDTO.getRuleStatus()))
 			throw new InvoiceApprovalException(messages.get("rule.status"));
+		else if (invoiceRuleDTO.getRule().getRuleDetails() != null) 
+		{
+			List<RuleDetails> ruleDetails = invoiceRuleDTO.getRule().getRuleDetails(); 
+			for (RuleDetails ruleDetail : ruleDetails) {
+				
+				BigDecimal fromAmt = ruleDetail.getFromAmt();
+				BigDecimal toAmt = ruleDetail.getToAmt();
+				
+				if(ruleDetail.getCurrency()== null || "".equals(ruleDetail.getCurrency())) {
+					throw new InvoiceApprovalException(messages.get("rule.ruledetails"));	
+				}
+				else if(fromAmt == null || (-1 == fromAmt.signum())) {
+					throw new InvoiceApprovalException(messages.get("rule.fromAmt"));
+				}
+				else if(toAmt == null || (-1 == toAmt.signum())) {
+					throw new InvoiceApprovalException(messages.get("rule.toAmt"));
+				}
+				else if(ruleDetail.getLevel() == null && ruleDetail.getLevel().isEmpty()) {
+					throw new InvoiceApprovalException(messages.get("rule.ruledetails"));
+				}
+			}
+		}
 	}
 }
