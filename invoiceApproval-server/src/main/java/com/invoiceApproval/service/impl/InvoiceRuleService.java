@@ -146,7 +146,7 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 	 * @param orgId
 	 */
 	@Override
-	public Iterable<InvoiceRule> findAllRulesByOrgId(Integer orgId) throws Exception {
+	public InvoiceRule findAllRulesByOrgId(Integer orgId) throws Exception {
 		return invoiceRuleDoa.findAllRulesByOrgId(orgId);
 	}
 

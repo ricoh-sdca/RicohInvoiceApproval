@@ -16,9 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.invoiceApproval.Utils.Constants;
+import com.invoiceApproval.Utils.Messages;
 import com.invoiceApproval.doa.impl.InvoiceDao;
 import com.invoiceApproval.entity.Invoice;
 import com.invoiceApproval.entity.RuleDetails;
+import com.invoiceApproval.entity.User;
+import com.invoiceApproval.service.impl.SendGridEmailService;
+import com.invoiceApproval.service.impl.UserService;
+import com.sendgrid.Response;
 
 @Component
 @Rule(name="level 1",priority=1,description="Invoice Rule Engine")
@@ -28,6 +33,15 @@ public class InvoiceRuleEngine {
 	
 	@Autowired 
 	private InvoiceDao invoiceDao;
+	
+	@Autowired
+	private SendGridEmailService sendGridEmailService; 
+	
+	@Autowired
+	private Messages messages;
+	
+	@Autowired
+	private UserService userService;
 	
 	public static String level = null;
 	
@@ -78,7 +92,33 @@ public class InvoiceRuleEngine {
 		invoice.setUpdatedBy(Constants.SYSTEM);
 		
 		// Save record in Invoice in db
-		invoiceDao.saveInvoiceDetails(invoice);
+		logger.info("Saving Invoice Record to DB");
+		Invoice newInvoice = invoiceDao.saveInvoiceDetails(invoice);
+
+		// Get users with current_approver level
+		logger.info("Getting list of all users with CurrApprovalLevel - "+newInvoice.getCurrApprovalLevel());
+		List<User> userList = userService.getUsersByApprovalLevel(newInvoice.getCurrApprovalLevel());
+		
+		// Send E-mail to all users with current approver
+		if(userList != null) {
+			logger.info("Sending e-mail to #users ="+userList.size());
+			for (int i = 0; i < userList.size(); i++) {
+				User userObj = userList.get(i);
+				Response response =  sendGridEmailService.sendHTML(messages.get("email.from"), 
+						userObj.getEmailId(),
+						messages.get("email.subject"), 
+						messages.get("email.body"));
+				if(response.getStatusCode() == Constants.ACCEPTED) {
+					logger.info(
+							"E-mail notification is being successfully accepted by SendGrid for processing for user ="
+									+ userObj.getFirstName() + " " + userObj.getLastName());
+				}else {
+					logger.error("Error : E-mail status code other than 202, response Code ="+response.getStatusCode());
+				}
+			}
+		}else {
+			logger.warn("No users with approval level "+newInvoice.getCurrApprovalLevel()+" found, thus emails NOT sent");
+		}
 	}
 	
 	/**

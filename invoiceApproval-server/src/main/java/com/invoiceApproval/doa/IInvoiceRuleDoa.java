@@ -6,7 +6,7 @@ public interface IInvoiceRuleDoa {
 
 	public Iterable<InvoiceRule> findAllRules() throws Exception;
 	
-	public Iterable<InvoiceRule> findAllRulesByOrgId(Integer orgId) throws Exception;
+	public InvoiceRule findAllRulesByOrgId(Integer orgId) throws Exception;
 	
 	public InvoiceRule find(Integer id) throws Exception;
 	

@@ -10,7 +10,7 @@ public interface IInvoiceRuleService {
 
 	public List<InvoiceRuleDTO> findAllRules() throws Exception;
 	
-	public Iterable<InvoiceRule> findAllRulesByOrgId(Integer orgId) throws Exception;
+	public InvoiceRule findAllRulesByOrgId(Integer orgId) throws Exception;
 	
 	public InvoiceRuleDTO find(Integer id) throws Exception;
 	

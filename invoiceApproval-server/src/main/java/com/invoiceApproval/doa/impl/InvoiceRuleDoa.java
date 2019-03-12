@@ -89,12 +89,12 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<InvoiceRule> findAllRulesByOrgId(Integer orgId) throws Exception {
+	public InvoiceRule findAllRulesByOrgId(Integer orgId) throws Exception {
 		try {
-			String hql = "FROM InvoiceRule as ipr WHERE ipr.organization.orgId = :orgId and ipr.ruleStatus='Y'";
-			List<InvoiceRule> invoiceApprovalRules = entityManager.createQuery(hql).setParameter("orgId", orgId)
-			              .getResultList();
-			return invoiceApprovalRules;
+			String hql = "FROM InvoiceRule as ipr WHERE ipr.organization.orgId = :orgId and ipr.ruleStatus='"+Constants.ACTIVE+"'";
+			InvoiceRule invoiceApprovalObj = (InvoiceRule)entityManager.createQuery(hql).setParameter("orgId", orgId)
+			              .getSingleResult();
+			return invoiceApprovalObj;
 		} catch (Exception e) {
 			logger.error("An exception occured in findAllRulesByOrgId >>",e.getCause());
 		}

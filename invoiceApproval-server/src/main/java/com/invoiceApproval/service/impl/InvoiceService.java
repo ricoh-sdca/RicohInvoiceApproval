@@ -1,6 +1,5 @@
 package com.invoiceApproval.service.impl;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -68,10 +67,9 @@ public class InvoiceService implements IInvoiceService {
 			invoice.setInvoiceStatus(Constants.PENDING);
 			
 			// Validation - Rule exists for OrgId?
-			Iterable<InvoiceRule> invoiceRules = invoiceRuleService.findAllRulesByOrgId(invoice.getOrganization().getOrgId());
-			if(invoiceRules != null) {
-				InvoiceRule invoiceRule = invoiceRules.iterator().next();
-				
+			InvoiceRule invoiceRule = invoiceRuleService.findAllRulesByOrgId(invoice.getOrganization().getOrgId());
+			if(invoiceRule != null) {
+
 				// Identify Current and Final Approver using Easy Rule Engine
 				Facts facts = new Facts();
 				facts.put("invoice",invoice);
@@ -103,6 +101,9 @@ public class InvoiceService implements IInvoiceService {
 		return new ResponseVO(Constants.SUCCESS, messages.get("invoice.success"),null);
 	}
 	
+	/**
+	 * 
+	 */
 	@Override
 	public ModelMap getAllInvoices(String userName,String invoiceStatus) throws InvoiceApprovalException {
 		logger.info("Enter getUserPendingInvoices() of InvoiceService");
@@ -122,16 +123,12 @@ public class InvoiceService implements IInvoiceService {
 				return modelMap;
 			}
 			else {
-				responseVO = new ResponseVO(Constants.FAILED, null, null);
-				modelMap.put("response", responseVO);
-				modelMap.put("ruleDetails", null);
+				
 				return modelMap;
 			}
 		} catch (Exception e) {
 			logger.error(messages.get("invoice.error"),e);
-			responseVO = new ResponseVO(Constants.FAILED, null, messages.get("invoice.error")+e.getMessage());
-			modelMap.put("response", responseVO);
-			modelMap.put("ruleDetails", null);
+			
 			return modelMap;
 		}
 	}
