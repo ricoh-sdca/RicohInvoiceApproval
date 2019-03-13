@@ -17,6 +17,7 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -63,7 +64,7 @@ public class InvoiceRule implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name="org_id")
-	@JsonIgnore
+	@JsonBackReference
 	private Organization organization;
 
 	/** SETTER / GETTER **/

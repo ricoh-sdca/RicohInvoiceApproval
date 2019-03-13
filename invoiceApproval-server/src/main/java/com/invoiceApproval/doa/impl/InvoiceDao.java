@@ -60,8 +60,15 @@ public class InvoiceDao implements IInvoiceDao {
 					query +="i.organization.orgId = u.organization.orgId and u.userStatus='"+Constants.ACTIVE+"' and ";
 				}if(invoiceStatus != null) {
 					query +="i.invoiceStatus='"+invoiceStatus+"' order by i.createdAt asc";
+				}else {
+					query +="1=1 order by i.createdAt asc";
 				}
 		 return manager.createQuery(query).getResultList()	;
+	}
+
+	@Override
+	public Invoice getPendingInvoiceById(String invoiceNumber) {
+		return repository.getPendingInvoiceById(invoiceNumber,Constants.PENDING);
 	}
 
 }

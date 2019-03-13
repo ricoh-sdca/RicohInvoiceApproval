@@ -27,6 +27,10 @@ public class InvoiceDTO {
 	private Date updatedAt;
 	private Integer orgId;
 	
+	//Added for invoice approve reject api
+	private String username;
+	private String comments;
+	
 	public String getInvoiceNumber() {
 		return invoiceNumber;
 	}
@@ -117,7 +121,18 @@ public class InvoiceDTO {
 	public void setVendor(String vendor) {
 		this.vendor = vendor;
 	}
-	
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
 	public InvoiceDTO wrapToDto(Invoice invoice) {
 		InvoiceDTO dto = new InvoiceDTO();
 		dto.setInvoiceNumber(invoice.getInvoiceNumber());

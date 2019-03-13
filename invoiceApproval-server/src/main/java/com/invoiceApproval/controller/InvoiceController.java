@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ import com.invoiceApproval.service.IUserService;
 import com.invoiceApproval.service.impl.InvoiceService;
 
 @RestController
+@CrossOrigin(origins="http://localhost:4200")
 public class InvoiceController {
 
 	private static final Logger logger = LogManager.getLogger(InvoiceService.class);
@@ -44,15 +46,19 @@ public class InvoiceController {
 	 * @param invoice
 	 * @return ResponseVO
 	 */
+	@CrossOrigin(origins="http://localhost:4200")
 	@PostMapping(path="/invoiceInput")
-	public ResponseVO saveInvoiceDetails(@Valid @RequestBody Invoice invoice) {
+	public ModelMap saveInvoiceDetails(@Valid @RequestBody Invoice invoice) {
 		
 		logger.info("calling saveInvoiceDetils() of InvoiceController");
+		ResponseVO responseVO = null;
 		try {
-			return  invoiceService.saveInvoiceDetails(invoice);
+			responseVO = invoiceService.saveInvoiceDetails(invoice);
+			return ResponseUtils.getModelMap(responseVO, null, Constants.INVOICEDETAILS);
 		} catch (Exception e) {
 			logger.error(messages.get("invoice.error"),e);
-			return new ResponseVO(Constants.FAILED, messages.get("invoice.error"), e.getMessage());
+			responseVO =  new ResponseVO(Constants.FAILED, messages.get("invoice.error"), e.getMessage());
+			return ResponseUtils.getModelMap(responseVO, null, Constants.INVOICEDETAILS);
 		}
 	}
 	
@@ -60,6 +66,7 @@ public class InvoiceController {
 	 * This method returns all pending invoices based on login user
 	 * @return List
 	 */
+	@CrossOrigin(origins="http://localhost:4200")
 	@GetMapping(path="/invoices/{username}")
 	public ModelMap getAllPendingInvoices(@PathVariable(name="username") String userName)
 	{
@@ -68,27 +75,53 @@ public class InvoiceController {
  			User user = userService.getUserByName(userName);
  			List<InvoiceDTO> invoiceDtos = invoiceService.getAllInvoices(user.getApprovalLevel(),Constants.PENDING);
  			if(invoiceDtos != null)
- 				return ResponseUtils.getModelMap(new ResponseVO(Constants.SUCCESS,null,null),invoiceDtos);
+ 				return ResponseUtils.getModelMap(new ResponseVO(Constants.SUCCESS,null,null),invoiceDtos,Constants.INVOICEDETAILS);
  			else
- 				return ResponseUtils.getModelMap(new ResponseVO(Constants.SUCCESS,messages.get("invoice.noPending"),null),invoiceDtos);
+ 				return ResponseUtils.getModelMap(new ResponseVO(Constants.SUCCESS,messages.get("invoice.noPending"),null),invoiceDtos,Constants.INVOICEDETAILS);
 		} catch (InvoiceApprovalException e) {
 			logger.error(messages.get("invoice.error"),e);
-			return ResponseUtils.getModelMap(new ResponseVO(Constants.FAILED,null,messages.get("common.error")+e.getErrorMessage()),null);
+			return ResponseUtils.getModelMap(new ResponseVO(Constants.FAILED,null,messages.get("common.error")+e.getErrorMessage()),null,Constants.INVOICEDETAILS);
 		}
 	}
 	
 	/**
-	 * This method called when user approve an invoice.
+	 * This method approve an invoice based on given invoice number.
 	 * @param invoiceNumber
-	 * @return
+	 * @return ModelMap
 	 * @throws InvoiceApprovalException
 	 */
-	@PostMapping(path="/invoices/approve/{invoicenumber}")
-	public ModelMap approveInvoice(@PathVariable(name="invoicenumber") String invoiceNumber) throws InvoiceApprovalException
+	@PostMapping(path="/invoices/approve")
+	public ModelMap approveInvoice(@RequestBody InvoiceDTO invoiceDTO) throws InvoiceApprovalException
 	{
 		logger.info("calling approveInvoice() of InvoiceController");
-		ModelMap modelMap = null;
- 		modelMap = invoiceService.approveInvoice(invoiceNumber);
-		return modelMap;
+		ResponseVO responseVO = null;
+		try {
+			responseVO = invoiceService.approveInvoice(invoiceDTO);
+			return ResponseUtils.getModelMap(responseVO, null,Constants.INVOICEDETAILS);
+		} catch (Exception e) {
+			logger.error(messages.get("common.error"),e);
+			return ResponseUtils.getModelMap(new ResponseVO(Constants.FAILED, null, e.getMessage()), null,Constants.INVOICEDETAILS);
+		}
+	}
+	
+	/**
+	 * This method reject the given invoice based on invoice number.
+	 * @param userName
+	 * @param invoiceNumber
+	 * @return ModelMap
+	 * @throws InvoiceApprovalException
+	 */
+	@PostMapping(path="/invoices/reject")
+	public ModelMap rejectInvoice(@RequestBody InvoiceDTO invoiceDTO) throws InvoiceApprovalException
+	{
+		logger.info("calling approveInvoice() of InvoiceController");
+		ResponseVO responseVO = null;
+		try {
+			responseVO = invoiceService.rejectInvoice(invoiceDTO);
+			return ResponseUtils.getModelMap(responseVO, null,Constants.INVOICEDETAILS);
+		} catch (Exception e) {
+			logger.error(messages.get("common.error"),e);
+			return ResponseUtils.getModelMap(new ResponseVO(Constants.FAILED, null, e.getMessage()), null,Constants.INVOICEDETAILS);
+		}
 	}
 }

@@ -6,13 +6,24 @@ import org.springframework.ui.ModelMap;
 
 import com.invoiceApproval.entity.ResponseVO;
 
+/**
+ * @author atul_jadhav
+ *
+ */
 public class ResponseUtils {
 
-	public static ModelMap getModelMap(ResponseVO responseVO,List<?> ruleDataList )
+	/**
+	 * This method returns modelmap object to UI or user for data iteration. 
+	 * @param responseVO
+	 * @param ruleDataList
+	 * @param key
+	 * @return ModelMap
+	 */
+	public static ModelMap getModelMap(ResponseVO responseVO,List<?> dataList,String key)
 	{
 		ModelMap modelMap = new ModelMap();
 		modelMap.put("response", responseVO);
-		modelMap.put("ruleDetails", ruleDataList);
+		modelMap.put(key, dataList);
 		return modelMap;
 	}
 }

@@ -87,7 +87,6 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public InvoiceRule findAllRulesByOrgId(Integer orgId) throws Exception {
 		try {

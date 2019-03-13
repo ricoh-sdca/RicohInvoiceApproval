@@ -81,6 +81,7 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 	public InvoiceRule create(InvoiceRule invoiceRule) throws Exception{
 		logger.info("Validating rule");
 		if(isValidRule(invoiceRule)) {
+			invoiceRule.setRuleStatus(Constants.ACTIVE);
 			InvoiceRule createdRule = invoiceRuleDoa.create(invoiceRule);
 			if(createdRule != null) {
 				return createdRule;

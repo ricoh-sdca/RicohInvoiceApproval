@@ -11,4 +11,6 @@ public interface IInvoiceDao {
 	public Invoice saveInvoiceDetails(Invoice invoice);
 
 	List<Invoice> getAllInvoices(String userName,String invoiceStatus);
+	
+	public Invoice getPendingInvoiceById(String invoiceNumber);
 }

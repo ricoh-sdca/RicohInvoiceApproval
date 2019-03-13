@@ -26,4 +26,9 @@ public class Constants {
 
 	//E-mail
 	public static final int ACCEPTED = 202;
+	
+	//ModelMap keys
+	public static final String RULEDETAILS="ruleDetails";
+	public static final String INVOICEDETAILS="invoiceDetails";
+	
 }

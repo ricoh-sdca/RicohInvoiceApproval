@@ -29,7 +29,7 @@ public class SendGridEmailService implements EmailService {
     }
     
     /**
-     * This method is used for Sending HTML mail
+     * This method is used for Sending Text mail
      * @param from
      * @param to
      * @param subject

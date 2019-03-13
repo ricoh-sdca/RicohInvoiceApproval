@@ -1,5 +1,7 @@
 package com.invoiceApproval.service.impl;
 
+import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -13,15 +15,17 @@ import org.jeasy.rules.core.DefaultRulesEngine;
 import org.jeasy.rules.core.RuleProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 
 import com.invoiceApproval.Utils.Constants;
 import com.invoiceApproval.Utils.Messages;
+import com.invoiceApproval.doa.impl.InvoiceAuditDao;
 import com.invoiceApproval.doa.impl.InvoiceDao;
 import com.invoiceApproval.entity.Invoice;
+import com.invoiceApproval.entity.InvoiceAudit;
 import com.invoiceApproval.entity.InvoiceDTO;
 import com.invoiceApproval.entity.InvoiceRule;
 import com.invoiceApproval.entity.ResponseVO;
+import com.invoiceApproval.entity.User;
 import com.invoiceApproval.exception.InvoiceApprovalException;
 import com.invoiceApproval.service.IInvoiceService;
 import com.invoiceApproval.service.InvoiceRuleEngine;
@@ -42,6 +46,12 @@ public class InvoiceService implements IInvoiceService {
 	
 	@Autowired
 	private InvoiceRuleEngine invoiceRuleEngine; 
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private InvoiceAuditDao invoiceAuditDao;
 	
 	/**
 	 * This method is used to verify of All invoices are processed (i.e. APPROVED / REJECTED)
@@ -127,37 +137,141 @@ public class InvoiceService implements IInvoiceService {
 		return null;
 	}
 
-	public ModelMap approveInvoice(String invoiceNumber) {
-		return null;/*
-		logger.info("Enter getUserPendingInvoices() of InvoiceService");
-		ModelMap modelMap = new ModelMap();
-		ResponseVO responseVO = null;
+	/**
+	 * This method approves given invoice number and send success/failed response back to user.
+	 * @param invoiceNumber
+	 * @param user
+	 * @return ResponseVO
+	 * @throws InvoiceApprovalException
+	 */
+	@Override
+	public ResponseVO approveInvoice(InvoiceDTO invoiceDTO) throws InvoiceApprovalException {
+		logger.info("Enter approveInvoice() of InvoiceService");
 		try {
-			List<Invoice> invoiceList = invoiceDao.approveInvoice(invoiceNumber);
-			if(invoiceList != null && invoiceList.size() > 0) {
-				List<InvoiceDTO> dtos = new LinkedList<>();
-				for (Invoice invoice : invoiceList) {
-					InvoiceDTO dto = new InvoiceDTO();
-					dtos.add(dto.wrapToDto(invoice));
+			User user = userService.getUserByName(invoiceDTO.getUsername());
+			Invoice invoice	= getPendingInvoiceById(invoiceDTO.getInvoiceNumber());
+			Iterator<InvoiceRule> itr = invoice.getOrganization().getApprovalRules().stream().iterator();
+			String invoiceMode = null;
+			Invoice updatedInvoice = null;
+			InvoiceAudit invoiceAudit = null;
+			while (itr.hasNext()) {
+				InvoiceRule invoiceRule = (InvoiceRule) itr.next();
+				if(invoiceRule.getRuleStatus().equals(Constants.ACTIVE))
+				{
+					invoiceMode = invoiceRule.getMode();
+					break;
 				}
-				responseVO = new ResponseVO(Constants.SUCCESS, null, null);
-				modelMap.put("response", responseVO);
-				modelMap.put("ruleDetails", invoiceList);
-				return modelMap;
+			}
+			if(invoiceMode != null && invoiceMode.equalsIgnoreCase(Constants.TOP) && invoice.getFinalApprovalLevel().equals(user.getApprovalLevel()))
+			{
+				invoice.setInvoiceStatus(Constants.APPROVED);
+				invoice.setUpdatedAt(new Date());
+				invoice.setUpdatedBy(user.getUserName());
+				invoice.setCurrApprovalLevel(user.getApprovalLevel());
+				updatedInvoice = invoiceDao.saveInvoiceDetails(invoice);
+				
+				if(updatedInvoice != null) {
+					invoiceAudit = wrapToInvoiceAudit(updatedInvoice);
+					invoiceAudit.setUser(user);
+					invoiceAudit.setUserComments(invoiceDTO.getComments());
+					invoiceAudit.setApprovalLevel(user.getApprovalLevel());
+					invoiceAuditDao.save(invoiceAudit);
+					return new ResponseVO(Constants.SUCCESS, messages.get("invoice.approve"), null);
+				}
+			}
+			else if(invoiceMode != null && invoiceMode.equalsIgnoreCase(Constants.SEQ) && invoice.getCurrApprovalLevel().equals(user.getApprovalLevel()))
+			{
+				invoice.setUpdatedAt(new Date());
+				invoice.setUpdatedBy(user.getUserName());
+				if(invoice.getFinalApprovalLevel().equals(user.getApprovalLevel())) {
+					invoice.setInvoiceStatus(Constants.APPROVED);
+					invoice.setCurrApprovalLevel(user.getApprovalLevel());
+				}else {
+					invoice.setCurrApprovalLevel((Integer.parseInt(user.getApprovalLevel())+1)+"");	
+				}
+				updatedInvoice = invoiceDao.saveInvoiceDetails(invoice);
+				
+				if(updatedInvoice != null) {
+					invoiceAudit = wrapToInvoiceAudit(updatedInvoice);
+					invoiceAudit.setUser(user);
+					invoiceAudit.setUserComments(invoiceDTO.getComments());
+					invoiceAudit.setApprovalLevel(user.getApprovalLevel());
+					invoiceAuditDao.save(invoiceAudit);
+					return new ResponseVO(Constants.SUCCESS, messages.get("invoice.approve"), null);
+				}
 			}
 			else {
-				responseVO = new ResponseVO(Constants.FAILED, null, null);
-				modelMap.put("response", responseVO);
-				modelMap.put("ruleDetails", null);
-				return modelMap;
+				return new ResponseVO(Constants.FAILED, null, messages.get("invoice.notAllowToApprove"));
 			}
 		} catch (Exception e) {
 			logger.error(messages.get("invoice.error"),e);
-			responseVO = new ResponseVO(Constants.FAILED, null, messages.get("invoice.error")+e.getMessage());
-			modelMap.put("response", responseVO);
-			modelMap.put("ruleDetails", null);
-			return modelMap;
+			throw new InvoiceApprovalException(e.getMessage());
 		}
-	*/}
+		return null;
+	}
 
+	/**
+	 * This method return Invoice entity based on invoice number.
+	 * @param invoiceNumber
+	 * @return Invoice entity
+	 */
+	@Override
+	public Invoice getPendingInvoiceById(String invoiceNumber) throws InvoiceApprovalException {
+		logger.info("Enter getInvoiceById() of InvoiceService");
+		try {
+			Invoice invoice = invoiceDao.getPendingInvoiceById(invoiceNumber);
+			if(invoice == null) {
+				throw new InvoiceApprovalException(messages.get("invoice.notfound"));
+			}else {
+				return invoice;
+			}
+		} catch (Exception e) {
+			logger.info(messages.get("invoice.notfound"));
+			throw new InvoiceApprovalException(messages.get("invoice.notfound"));
+		}
+	}
+
+	/**
+	 * This method reject the given invoice based on invoice number.
+	 * @param invoiceNumber
+	 * @param user
+	 * @return ResponseVO
+	 * @throws InvoiceApprovalException 
+	 */
+	@Override
+	public ResponseVO rejectInvoice(InvoiceDTO invoiceDTO) throws InvoiceApprovalException {
+		logger.info("Enter rejectInvoice() of InvoiceService");
+		try {
+			User user = userService.getUserByName(invoiceDTO.getUsername());
+			Invoice invoice	= getPendingInvoiceById(invoiceDTO.getInvoiceNumber());
+			invoice.setInvoiceStatus(Constants.REJECTED);
+			invoice.setUpdatedAt(new Date());
+			invoice.setUpdatedBy(user.getUserName());
+			invoice.setCurrApprovalLevel(user.getApprovalLevel());
+			Invoice rejectedInvoice = invoiceDao.saveInvoiceDetails(invoice);
+			if(rejectedInvoice != null)
+			{
+				InvoiceAudit invoiceAudit = wrapToInvoiceAudit(rejectedInvoice);
+				invoiceAudit.setUser(user);
+				invoiceAudit.setUserComments(invoiceDTO.getComments());
+				invoiceAudit.setApprovalLevel(user.getApprovalLevel());
+				invoiceAuditDao.save(invoiceAudit);
+				return new ResponseVO(Constants.SUCCESS, messages.get("invoice.reject"), null);
+			}
+			else {
+				throw new InvoiceApprovalException(messages.get("common.error"));
+			}
+			
+		} catch (Exception e) {
+			logger.error(messages.get("invoice.error"),e);
+			throw new InvoiceApprovalException(e.getMessage());
+		}
+	}
+	protected InvoiceAudit wrapToInvoiceAudit(Invoice invoice) {
+		InvoiceAudit invoiceAudit = new InvoiceAudit();
+		invoiceAudit.setInvoiceDetails(invoice);
+		invoiceAudit.setUpdatedAt(new Date());
+		invoiceAudit.setUpdatedStatus(invoice.getInvoiceStatus());
+		return invoiceAudit;
+	}
 }
