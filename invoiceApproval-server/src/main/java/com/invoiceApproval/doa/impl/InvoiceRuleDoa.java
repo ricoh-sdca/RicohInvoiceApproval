@@ -3,11 +3,13 @@ package com.invoiceApproval.doa.impl;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -94,8 +96,10 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 			InvoiceRule invoiceApprovalObj = (InvoiceRule)entityManager.createQuery(hql).setParameter("orgId", orgId)
 			              .getSingleResult();
 			return invoiceApprovalObj;
-		} catch (Exception e) {
-			logger.error("An exception occured in findAllRulesByOrgId >>",e.getCause());
+		} catch (NoResultException e) {
+			logger.error("An exception occured in findAllRulesByOrgId >>",messages.get("rule.notFound"));
+		}catch(NonUniqueResultException e){
+			logger.error("An exception occured in findAllRulesByOrgId >>",messages.get("rule.noUnique"));
 		}
 		return null;
 	}

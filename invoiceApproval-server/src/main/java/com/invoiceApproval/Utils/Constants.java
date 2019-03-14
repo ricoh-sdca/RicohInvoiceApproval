@@ -12,7 +12,7 @@ public class Constants {
 	public static final String SEQ = "SEQ";
 	
 	//User approval level
-	public static final String LEVEL = "LEVEL";
+	public static final String LEVEL1 = "1";
 	
 	//User status
 	public static final String ACTIVE = "ACTIVE";

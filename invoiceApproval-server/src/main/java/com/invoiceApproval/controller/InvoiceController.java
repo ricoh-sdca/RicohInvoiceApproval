@@ -90,6 +90,7 @@ public class InvoiceController {
 	 * @return ModelMap
 	 * @throws InvoiceApprovalException
 	 */
+	@CrossOrigin(origins="http://localhost:4200")
 	@PostMapping(path="/invoices/approve")
 	public ModelMap approveInvoice(@RequestBody InvoiceDTO invoiceDTO) throws InvoiceApprovalException
 	{
@@ -111,10 +112,11 @@ public class InvoiceController {
 	 * @return ModelMap
 	 * @throws InvoiceApprovalException
 	 */
+	@CrossOrigin(origins="http://localhost:4200")
 	@PostMapping(path="/invoices/reject")
 	public ModelMap rejectInvoice(@RequestBody InvoiceDTO invoiceDTO) throws InvoiceApprovalException
 	{
-		logger.info("calling approveInvoice() of InvoiceController");
+		logger.info("calling rejectInvoice() of InvoiceController");
 		ResponseVO responseVO = null;
 		try {
 			responseVO = invoiceService.rejectInvoice(invoiceDTO);

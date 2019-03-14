@@ -148,6 +148,8 @@ public class InvoiceRuleDTO {
 		invoiceRuleDTO.setRule(invoiceRule.getRule());
 		invoiceRuleDTO.setRuleStatus(invoiceRule.getRuleStatus());
 		invoiceRuleDTO.setVendor(invoiceRule.getVendor());
+		invoiceRuleDTO.setCreatedAt(invoiceRule.getCreatedAt());
+		invoiceRuleDTO.setCreatedBy(invoiceRule.getCreatedBy());
 		return invoiceRuleDTO;
 	}
 	public InvoiceRule wrapForUpdate(InvoiceRuleDTO invoiceRuleDTO, InvoiceRule invoiceRule)

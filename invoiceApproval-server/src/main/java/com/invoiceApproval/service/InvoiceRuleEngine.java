@@ -4,10 +4,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.ws.Action;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jeasy.rules.annotation.Action;
 import org.jeasy.rules.annotation.Condition;
 import org.jeasy.rules.annotation.Fact;
 import org.jeasy.rules.annotation.Rule;
@@ -81,7 +80,7 @@ public class InvoiceRuleEngine {
 		if(ruleMode.equalsIgnoreCase(Constants.TOP)) {
 			invoice.setCurrApprovalLevel(level);
 		}else {
-			invoice.setCurrApprovalLevel(Constants.LEVEL+"-1");
+			invoice.setCurrApprovalLevel(Constants.LEVEL1);
 		}
 		invoice.setFinalApprovalLevel(level);
 		
@@ -128,7 +127,7 @@ public class InvoiceRuleEngine {
 	 * @param maxValueExclusive
 	 * @return
 	 */
-	public static boolean between(BigDecimal i, BigDecimal minValueInclusive, BigDecimal maxValueExclusive) {
+	public boolean between(BigDecimal i, BigDecimal minValueInclusive, BigDecimal maxValueExclusive) {
 	    if (i.doubleValue() >= minValueInclusive.doubleValue() 
 	    		&& i.doubleValue() < maxValueExclusive.doubleValue())
 	        return true;
