@@ -31,6 +31,10 @@ public class UserDTO implements Serializable {
 
 	private String email;
 
+	public UserDTO() {
+		super();
+	}
+
 	/**
 	 * @return the username
 	 */

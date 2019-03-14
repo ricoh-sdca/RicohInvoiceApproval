@@ -6,6 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.invoiceApproval.Utils.Constants;
 import com.invoiceApproval.Utils.Messages;
 import com.invoiceApproval.entity.ResponseVO;
+import com.invoiceApproval.entity.User;
 import com.invoiceApproval.entity.UserDTO;
 import com.invoiceApproval.exception.InvoiceApprovalException;
 import com.invoiceApproval.service.ILoginService;
@@ -22,8 +25,9 @@ import com.invoiceApproval.service.ILoginService;
  * @author atul_jadhav
  * 
  */
+//@SessionAttributes("userDTO")
 @RestController
-@SessionAttributes("user")
+@CrossOrigin(origins="http://localhost:4200")
 public class LoginController {
 
 	private static final Logger LOGGER = LogManager.getLogger(LoginController.class);
@@ -33,6 +37,12 @@ public class LoginController {
 
 	@Autowired
 	private Messages messages;
+	
+	//@ModelAttribute("userDTO")
+	UserDTO getUser() {
+		System.out.println("#########################");
+	  return new UserDTO();
+	}
 
 	/**
 	 * This method called when user login.
