@@ -1,6 +1,7 @@
 package com.invoiceApproval.doa;
 
 import com.invoiceApproval.entity.InvoiceRule;
+import com.invoiceApproval.exception.InvoiceApprovalException;
 
 public interface IInvoiceRuleDoa {
 
@@ -16,5 +17,5 @@ public interface IInvoiceRuleDoa {
 	
 	public void delete(InvoiceRule nvoiceRule) throws Exception;
 	
-	public InvoiceRule getRuleByIdAndOrgId(Integer orgId,Integer ruleId);
+	public InvoiceRule getRuleByIdAndOrgId(Integer orgId,Integer ruleId) throws InvoiceApprovalException;
 }

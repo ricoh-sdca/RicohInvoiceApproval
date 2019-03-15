@@ -145,6 +145,7 @@ public class InvoiceDTO {
 		dto.setInvoiceeEmail(invoice.getInvoiceeEmail());
 		dto.setCurrApprovalLevel(invoice.getCurrApprovalLevel());
 		dto.setFinalApprovalLevel(invoice.getFinalApprovalLevel());
+		dto.setCreatedAt(invoice.getCreatedAt());
 		return dto;
 	}
 }

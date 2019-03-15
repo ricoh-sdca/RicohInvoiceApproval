@@ -80,18 +80,23 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 	@Override
 	public InvoiceRule create(InvoiceRule invoiceRule) throws Exception{
 		logger.info("Validating rule");
-		if(isValidRule(invoiceRule)) {
-			invoiceRule.setRuleStatus(Constants.ACTIVE);
-			InvoiceRule createdRule = invoiceRuleDoa.create(invoiceRule);
-			if(createdRule != null) {
-				return createdRule;
-			}
-			else {
+		if(isAllInvoicesProcessed(invoiceRule.getOrganization().getOrgId(), Constants.PENDING)) {
+			if(isValidRule(invoiceRule)) {
+				invoiceRule.setRuleStatus(Constants.ACTIVE);
+				InvoiceRule createdRule = invoiceRuleDoa.create(invoiceRule);
+				if(createdRule != null) {
+					return createdRule;
+				}else {
+					logger.info(messages.get("rule.error"),messages.get("rule.invalid"));
+					throw new InvoiceApprovalException(messages.get("rule.invalid"));
+				}
+			}else {
+				logger.info(messages.get("rule.error"),messages.get("rule.invalid"));
 				throw new InvoiceApprovalException(messages.get("rule.invalid"));
 			}
 		}else {
-			logger.info("Incorrect amount range (Duplicate / Overlapping / Missing). Kindly verify amount range and try again");
-			throw new InvoiceApprovalException(messages.get("rule.invalid"));
+			logger.info(messages.get("rule.error"),messages.get("rule.status.pending"));
+			throw new InvoiceApprovalException(messages.get("rule.status.pending"));
 		}
 	}
 

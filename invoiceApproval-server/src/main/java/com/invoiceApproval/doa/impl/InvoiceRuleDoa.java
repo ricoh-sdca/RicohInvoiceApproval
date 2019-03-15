@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -98,26 +98,27 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 			return invoiceApprovalObj;
 		} catch (NoResultException e) {
 			logger.error("An exception occured in findAllRulesByOrgId >>",messages.get("rule.notFound"));
+			throw new InvoiceApprovalException(messages.get("rule.notFound"));
 		}catch(NonUniqueResultException e){
 			logger.error("An exception occured in findAllRulesByOrgId >>",messages.get("rule.noUnique"));
+			throw new InvoiceApprovalException(messages.get("rule.noUnique"));
 		}
-		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public InvoiceRule getRuleByIdAndOrgId(Integer ruleId,Integer orgId)
+	public InvoiceRule getRuleByIdAndOrgId(Integer ruleId,Integer orgId) throws InvoiceApprovalException
 	{
 		try {
 			String hql = "FROM InvoiceRule as ipr WHERE ipr.organization.orgId = :orgId and ipr.id=:ruleId and ipr.ruleStatus=:status";
-			List<InvoiceRule> invoiceRules = entityManager.createQuery(hql).setParameter("orgId", orgId).setParameter("ruleId", ruleId).setParameter("status", Constants.ACTIVE).
-					getResultList();
-			if(invoiceRules != null && invoiceRules.size() > 0) {
-				return invoiceRules.get(0);
-			}
-		} catch (Exception e) {
-			logger.error("An exception occured in findAllRulesByOrgId >>",e.getCause());
+			InvoiceRule invoiceRule = (InvoiceRule) entityManager.createQuery(hql).setParameter("orgId", orgId).setParameter("ruleId", ruleId).setParameter("status", Constants.ACTIVE).
+					getSingleResult();
+			return invoiceRule;
+		} catch (NoResultException e) {
+			logger.error("An exception occured in findAllRulesByOrgId >>",messages.get("rule.notFound"));
+			throw new InvoiceApprovalException(messages.get("rule.notFound"));
+		}catch(NonUniqueResultException e){
+			logger.error("An exception occured in findAllRulesByOrgId >>",messages.get("rule.noUnique"));
+			throw new InvoiceApprovalException(messages.get("rule.noUnique"));
 		}
-		return null;
 	}
 }
