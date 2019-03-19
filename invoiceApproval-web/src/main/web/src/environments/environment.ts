@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   //baseUrl:"http://10.55.195.52:8090"
-  baseUrl:"http://localhost:8090/invoiceApproval-app"
+  baseUrl:"http://localhost:8080/invoiceApproval-app"
   //baseUrl:"http://10.55.195.83:8090"
 
 };
