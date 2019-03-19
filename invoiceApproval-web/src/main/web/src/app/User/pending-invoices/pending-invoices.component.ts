@@ -124,8 +124,12 @@ export class PendingInvoicesComponent implements OnInit {
 });
   }
 
-  //Logout redirect to login
+  /** 
+   * FUNCTION   : logout()
+   * Objective  : This function is For Logout redirect to login
+  **/
   logout():void {
+    console.log("Logout");
     this.pendingInvoiceService.logout();
     this.router.navigate(['/login']);
   }

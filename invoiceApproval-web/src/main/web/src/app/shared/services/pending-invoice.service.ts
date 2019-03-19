@@ -10,7 +10,6 @@ import {environment} from './../../../environments/environment';
 })
 export class PendingInvoiceService {
   baseUrl=environment.baseUrl;
-  logout: any;
   data:any;
   constructor(private http:HttpClient) { }
 
@@ -26,5 +25,9 @@ export class PendingInvoiceService {
   rejectInvoice(invoiceObj){
     this.data = this.http.post<InvoiceAction>(this.baseUrl+'/invoices/reject',invoiceObj);
     return this.data;
+  }
+  
+  logout(): boolean {
+	  return true;
   }
 }

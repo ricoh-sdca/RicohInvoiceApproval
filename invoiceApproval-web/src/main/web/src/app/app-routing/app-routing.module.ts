@@ -11,12 +11,12 @@ const appRoutes: Routes = [
   { path: '', redirectTo:'login' , pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent},// , canActivate:[AuthGuard] },
-  { path: 'pendingInvoice' , component:PendingInvoicesComponent},
+  { path: 'pendingInvoices' , component:PendingInvoicesComponent},
   { path:'invoiceReport' ,component:InvoiceReportsComponent}
 ];
 
 @NgModule({
-  imports: [ RouterModule.forRoot( appRoutes ) ],
+  imports: [ RouterModule.forRoot( appRoutes,{useHash:true} ) ],
   exports: [ RouterModule ],
   declarations: []
 })
