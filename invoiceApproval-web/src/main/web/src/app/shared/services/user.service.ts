@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable,  } from 'rxjs';
-
+import {environment} from './../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,51 +11,30 @@ user={
   userName:"admin",
   password:"admin123"
 };
+
+data:any;
 res:Observable<any>;
-obj={}
+obj:any;
 invoice:any;
-demoUrl:string="https://jsonplaceholder.typicode.com/posts"
-  constructor(private http:HttpClient) { }
+baseUrl=environment.baseUrl;
 
-getUsers(userName: string , password: string) {
+constructor(private http:HttpClient) { }
 
-  if(this.user.userName == userName && this.user.password == password) {
-      sessionStorage.setItem('local currentUser', JSON.stringify(this.user))
-      return this.user;
-    }
-    else {
-      alert('unsucessful');
-      return null;
-    } 
+getUsers(username:string,password:string):Observable<any> {
+ 
+  this.obj={
+    "username":username,
+    "password":password
+  }
+  
+  this.data= this.http.post(this.baseUrl+'/login',this.obj)
+  console.log(this.data)
+  return this.data
   }
  
 logout(): boolean {
   return true;
   }
-
-  // demo purpose for calling facke back end .
-getRecords():Observable<any>{
-    console.log("hi")
-    this.invoice= this.http.get(this.demoUrl)
-     //console.log(this.data)
-    return this.invoice
-}
-
-addRecord(){
-
-  this.obj={
-    "userId": 1,
-    "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-    "body":"hello"
-  }
-
-  console.log("helllo")
-  this.res= this.http.post(this.demoUrl,this.obj)
-
-  console.log(this.res.pipe)
-}
-
-
 }
 
 

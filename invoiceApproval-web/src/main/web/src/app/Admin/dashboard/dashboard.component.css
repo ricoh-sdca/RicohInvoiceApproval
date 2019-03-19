@@ -1,20 +1,96 @@
-.header{
-    width: 379px;
-    height: 19px;
-    margin-top:16px ;
-    margin-right:872px;
-    margin-bottom: 35px ;
-    margin-left:0px;
-    top:30px;
-    font-family: Roboto;
-    font-size: 21px;
-    color: #2561c2;
-    font-weight:500px;
-    text-decoration: none solid rgb(37, 97, 194);
+#sidebaricon{
+    margin-top:0.2%;
+    margin-left:0%;
+    padding-left:0%;
+    height: 50%;
+    background-color: #000000;
+    outline:none;
+    border:none;
+    float:left;
+    color: #f2f2f2;
+    transform: rotate(90deg);
 }
-.invoice-summary{
-    width: 300px;
-    height: 24px;
+.slidebar{
+    float:left;
+    margin-top:10%;
+    background-size: cover;
+    width: auto;
+    height: 50%;
+    background-color: #2e2e2e;
+    background-size: cover;
+}
+.sidebar-button{
+    outline:none;
+    border:none;
+}
+.breadcrumb{ 
+    background-color: rgb(238, 245, 249);
+    margin-top: 2%;
+    margin-bottom: 2%;
+    width: 100%;
+    height: 100%;
+    padding: 0%;
+ }
+.breadcrumb-item{
+    width: 50%; 
+    height: auto;
+    font-family: Roboto;
+    font-size: 18px;;
+    color: #2561c2;
+    font-weight: 300;
+    text-decoration: none solid rgb(37, 97, 194);
+    float:left;
+    line-height: 32px;
+}
+a {
+    text-decoration: none !important;
+}
+#create-rule{
+    width:87px;
+    height:24px;
+    position: relative;
+    float: right;
+    left:680px;
+    bottom:10px;
+}
+#c-r{
+    width: 25%;
+    height: auto;
+    border-radius: 15px;
+    background-color: #fff;
+    background-size: cover;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.15);
+    float: right;
+    font-family: Roboto;
+    font-size: 14px;
+    color: #646e65;
+    font-weight: 100;
+    text-decoration: none solid rgb(100, 110, 101);
+    line-height: 32px;
+    letter-spacing: 1px;
+    padding-left: 10px;
+
+}
+.createRuleBtnDiv{
+    float: right;
+    padding-bottom: 0px;
+}
+.createRuleBtn{
+    border: none;
+    width: auto;
+    height: auto;
+    border-radius: 50px;
+    background-color: #3cd921;
+    background-size: cover;
+}
+.add-rule{
+    color: #fff;
+    outline: none;
+    width: 25px;
+    height: 25px;
+}
+.summary{
+    width: 100%;
     font-family: Roboto;
     font-size: 18px;
     color: #6b6b6b;
@@ -23,36 +99,30 @@
     line-height: 24px;
     letter-spacing: 1px;
 }
-.i-summary{
-    position:relative;
-    float:right;
+#i-summary{
+    float: right;
     width: 32px;
     height: 32px;
-    bottom:60px;
-    left:930px;
-    fill: #000000;
-    transform: rotate(90deg);
+    border: 1px solid #d9d9d9;
+    color: #000000;
+    cursor:pointer;   
 }
-.r-summary{
-    position:relative;
-    float:right;
+#r-summary{
+    float: right;
     width: 32px;
     height: 32px;
-    bottom:60px;
-    left:930px;
-    fill: #000000;
-    transform: rotate(90deg);
+    border: 1px solid #d9d9d9;
+    color: #000000;
+    cursor:pointer;
 }
+
 hr{
-    width: 1125px;
-    height: 11px;
-    fill: #8a8a8a;
+    width: 100%;
+    height: auto;
+    color: #8a8a8a;
+    margin-top: 0.6%;
 }
-.row{
-    width:1140px;
-    height:83px;
-    
-}
+
 .col {
     width: 268px;
     height: 83px;
@@ -63,121 +133,332 @@ hr{
     background-color: #ffffff;
     background-size: cover;
     box-shadow: 0px 0px 5px rgba(173,198,212,0.15);
-    margin-left:20px;
-    
+    margin-left:20px; 
 }
-.rule-summary{
-    width: 300px;
-    height: 24px;
-    font-family: Roboto;
-    font-size: 18px;
-    color: #6b6b6b;
-    font-weight: 100;
-    text-decoration: none solid rgb(107, 107, 107);
-    line-height: 24px;
-    letter-spacing: 1px;
-}
-.content{
-    width: 1125px;
-    height: 468px;
+.ruleContent{
+    float: left;
+    margin-top:0;
+    width: 100%;
+    height: 50%;
     border: 1px solid #d7dfe3;
     border-radius: 3px;
     background-color: #ffffff;
     background-size: cover;
     box-shadow: 0px 0px 5px rgba(173,198,212,0.15);   
 }
-.c-title{
+#c-title{
+    
     width: 300px;
     height: 16px;
     font-family: Roboto;
-    font-size: 20px;
+    font-size: 25px;
     color: #616161;
     font-weight: 300;
-    padding-left:50px;
+    padding-left:80px;
 }
-.rule{
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    left:80px;
-    top:360px;
+#rule{
+    width: 5px;
+    height: 5px;
+    left:5px;
+    top:20px;
 }
 #symbol{
-  position: relative;
-  padding-top: 55px; 
-  float:left; 
+    position: relative; 
+    padding-left:2px;
+
 }
-.table{
-    width:1123px;
-    table-layout: auto;
-    float:left;
+.add-r{
+    position:relative;
+    width: 130px;
+    height: 22px;
+    border-bottom-width: 1px;
+    border-style: solid;
+    border-color: #c2c2c2;
+    font-family: Roboto;
+    font-size: 13px;
+    color: #c4c4c4;
+    border-color: #fc4b6c;
+    text-decoration: none solid rgb(196, 196, 196);
 }
-thead ,tbody{
-    text-align: center;
+.invoice{
+    position: relative;
+    bottom:70px;
+    width: 45px;
+    height: 45px;
+    border-radius: 5px;  
+    background-size: cover;
+    left: 15px;  
 }
 .total-invoice {
-    position: relative;
-    bottom:70px;
-    width: 45px;
-    height: 45px;
-    border-radius: 5px;
     background-color: #1e88e5;
-    background-size: cover;
-    left: 15px;  
 }
 .pending-invoice{
-    position: relative;
-    bottom:70px;
-    width: 45px;
-    height: 45px;
-    border-radius: 5px;
-    background-color: #ffb22b;;
-    background-size: cover;
-    left: 15px;
+    background-color: #ffb22b;  
 }
 .approved-invoice{
-    position: relative;
-    bottom:70px;
-    width: 45px;
-    height: 45px;
-    border-radius: 5px;
-    background-color: #7460ee;
-    background-size: cover;
-    left: 15px; 
+    background-color: #7460ee; 
 }
 .deleted-invoice{
-    position: relative;
-    bottom:70px;
-    width: 45px;
-    height: 45px;
-    border-radius: 5px;
     background-color: #fc4b6c;
-    background-size: cover;
-    left: 15px;  
 }
 .invoice-icon{
     position: relative;
-    bottom:25px;
-    right:52px;
     width: 25px;
     height: 25px;
-    fill: #fff;
+    color: #fff;
+    top:7px;
 }
-.eye{
-    width: 20px;
-    height: 20px;
-    fill: #2583db;
+.row{
+    width:100%;
+    height:auto;
+    margin: 0%;
+    padding-top: 1%;
+    padding-bottom: 1%;
 }
-.pen{
-    width: 18px;
-    height: 18px;
-    fill: #2583db;
+.table{
+    width: 100%;
+ }
+ thead ,tbody{
+     text-align: center;
+ }
+.view{
+    color: #2583db;
+    padding-right:20px;
+    outline: none
+}
+.edit{
+    color: #2583db;   
+    padding-right:20px;
+    outline: none
 }
 .delete{
-    width: 20px;
-    height: 20px;
-    fill: #ff0d00;
+    color: #ff0d00;
+    outline: none
 }
-.icon{
-    margin-left:2px;
+.button{
+    background-color: #c2c2c2 !important;
+    border-color:  #c2c2c2 !important;
+}
+.row-class{
+    padding: 5px;
+    height: 7%;
+    width: 100%;
+}
+
+.tbl-ttl-icon{
+    height:15px;
+    width:15px;
+}
+.rule-btn{
+    background-color: white;
+    border: none;
+    outline: none
+}
+.tbl-icon{
+    height:20px;
+    width:20px;
+    border: 1px solid #d9d9d9;
+    margin:0;
+}
+.subrule-icon{
+    margin:auto;
+    float:left;
+    height:20px;
+    width:20px;
+}
+#viewSubrule{
+    width:20px;
+    color: #2583db;
+    float: left;
+    margin-left: 10%;
+    outline:none;
+}
+#noRecordFound{
+    margin:auto;
+    text-align: center;
+    color:red;
+}
+
+/* PopUp css start here */
+.modal-content{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: .3rem;
+    outline: 0;
+    width: 650px;
+    height: 448px;
+}
+
+#popupContainer{
+    width:100%;
+    float: left;
+}
+.ruleIconBtn{
+    background-color: white;
+    border: none;
+    outline: none
+}
+#popup-ttl{
+    width: 100%;
+    height: auto;
+    font-family: Roboto;
+    font-size: 14px;
+    color: #2b2b2b;
+    font-weight: 300;
+    text-decoration: none solid rgb(43, 43, 43);
+    line-height: 24px;
+    letter-spacing: 1px;
+    width: 409px;
+}
+.modal-title{
+    font-family: Roboto;
+    font-size: 16px;
+    color: #787878;
+    font-weight: 100;
+    text-decoration: none solid rgb(120, 120, 120);
+}
+.headerTr{
+   text-align: left;
+   height: auto;
+   padding-right:50%;
+}
+.CurrencyandSelectMode{
+    float: left;
+    width:auto;
+    height: 50%;
+    font-family: Roboto;
+    font-size: 14px;
+    color: #646e65;
+    color: #000000;
+    font-weight: 300;
+    text-decoration: none solid rgb(0, 0, 0);
+    margin: 0%;
+}
+.approval{
+   padding-right:5%;
+}
+.ruleDetailHeader{
+    padding-top: 5%;
+}
+.ruleDetailTitle{
+    font-family: Roboto;
+    font-size: 13px;
+    color: #646e65;
+    font-weight: 100;
+    text-decoration: none solid rgb(100, 110, 101);
+    line-height: 24px;
+    letter-spacing: 1px; 
+    text-align: left;   
+    display: block;
+}
+.createRuleTbl{
+    width: 100%;
+    border: 1px solid black;
+}
+#createRuleTblId{
+    width: 113px;
+    height: 24px;
+    font-family: Roboto;
+    font-size: 13px;
+    color: #646e65;
+    font-weight: 100;
+    text-decoration: none solid rgb(100, 110, 101);
+    line-height: 24px;
+    letter-spacing: 1px;
+}
+.textareaId{
+    text-align: left;
+    padding-top: 2%;
+    margin-left:2%;
+}
+.ruleRowId{
+    text-align: left;
+    padding: 4px;
+    margin-right:10px;
+}
+.ruleRowId input{
+    border: 1px solid #d1d1d1;
+    border-radius: 2px;
+    background-color: #ffffff;
+    background-size: cover;
+    font-family: Roboto;
+    font-size: 13px;
+    color: #8c8c8c;
+    text-decoration: none solid rgb(140, 140, 140);
+    width: 100%;
+}
+#addRuleRow{
+    border: none;
+    background-color:white;
+    width:30%;
+}
+.addRuleIcon{
+    font-size: 25px;
+    color: #3cd921; 
+    cursor: pointer;
+    vertical-align: middle;
+}
+.deleteRuleIcon{
+    font-size: 25px;
+    color: red; 
+    cursor: pointer;
+    vertical-align: middle;
+}
+.ruleTextArea{
+    width: 95%;
+    height: 87px;
+    padding: 10px 10px 0px;
+    border: 1px solid #c8c8c8;
+    background-size: cover;
+    font-family: Arial;
+    font-size: 14px;
+    color: #474747;
+    font-weight: 400;
+    text-decoration: none solid rgba(71, 71, 71, 0.5);
+    margin-bottom: 15px;
+    resize: none;
+}
+.drowdownCls{
+    width:100%;
+    height: auto;
+    border: 1px solid #c8c8c8;
+    border-radius: 2px;
+    font-family: Roboto;
+    font-size: 13px;
+    color: #696969;
+    text-decoration: none solid rgb(105, 105, 105);
+}
+#confirmMsg{
+    margin:auto;
+    text-align: center;
+}
+.mode{
+    position:right;
+}
+.addRuleRow{
+    border:none;
+    background-color: white;
+    outline: none;
+}
+.deleteRuleRow{ 
+    background-color: white;
+    border:none;
+    outline: none;
+    float:right;
+}
+.ourClass1{
+    color:red; 
+    margin-top:5px;
+}
+.popModalHeaderDiv{
+    padding-bottom: 1.5%;
+    padding-top: 1.5%;
+    outline: none;
+    border: none;
 }

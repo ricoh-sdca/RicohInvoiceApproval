@@ -1,47 +1,148 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<div class="wrapper">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
       <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-        <li class="nav-item active">
-          <figure><img src="../../assets/images/dashboard/ricoh-logo-6-fb-559-png.png"> </figure>
+        <li class="nav-item active" style="text-align: right">
+          <img class="logo" src="./assets/images/dashboard/ricoh-logo-6-fb-559-png.png"/>
         </li>
       </ul>
       <form class="form-inline my-2 my-lg-0">
-        <button class="btn btn-outline-default my-2 my-sm-0"><i class="fa fa-search" aria-hidden="true"></i></button>
-        <button class="btn btn-default" type="submit"> <a href="javascript:void(0);" (click)="logout()">Logout</a> </button>
+          <i class="fa fa-sign-out fa-3" aria-hidden="true" href="javascript:void(0)" (click)="logout()" style="font-size: 25px;color: #fc4b6c; cursor: pointer;"></i>
       </form>
     </div>
-</nav>
+  </nav>
 
-<div class="container">
-  <div class="header">Pending Invoices</div>
-    <div class="content">
-      <div class="content title">Invoice status
-        <span>
-          <i class="fas fa-angle-down"></i>
-          <i class="fas fa-search"></i>
-          <i class="fas fa-arrows-alt"></i>
-        </span>
-      </div>
-      <table>
-        <tr>
-          <th>Invoice Number </th>
-          <th>Amount</th>
-          <th>Vender</th>
-          <th>Requester Mail ID</th>
-          <th>Created On</th>
-          <th>Due Date</th>
-          <th>Action</th> 
-        </tr>
-        <tr>
-          <td>Bodb471</td>
-          <td>$1000</td>
-          <td> CDW Direct INC USA   </td>
-          <td> john_smith@cdwdirect.com   </td>s
-          <td> 05/19/2019  |  10:45AM</td>
-          <td> 06/15/2019 </td>
-          <td><button>Approve</button></td> 
-          <td><button>Approve</button></td> 
-        </tr>
-      </table>
+<!-- Main container start here -->
+  <div class="container">
+    <div  aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/pendingInvoices">Pending Invoices</a></li>
+        </ol>
     </div>
+  <!-- Table content start here -->
+    <div class="row table-responsive ">
+      <table class="table col-md-12">
+        <tr >
+          <td colspan="4" style="width: 50%;text-align: left">
+              <img src="./assets/images/dashboard/icon 5 .png" style="margin-right: 2%"/>
+              <span id="invoiceStatus">Invoice Status</span>
+          </td>
+          <td colspan="3" style="width: 50%;text-align: right">
+            <button class="functionicon"><img class=" tbl-ttl-icon" src="./assets/images/dashboard/icon 11.png"></button>
+            <button type="text"  class="functionicon" ><img  class="tbl-ttl-icon" src="./assets/images/dashboard/icon 12 .png" ></button>
+          </td>
+        </tr>
+        <tr class="invoiceTblHead">
+          <td>Invoice Number </td>
+          <td>Amount</td>
+          <td>Vender</td>
+          <td>Requester Mail ID</td>
+          <td>Created On</td>
+          <td>Due Date</td>
+          <td>Action</td>
+        </tr>
+        <ng-template ngFor let-invoice [ngForOf]="PendingInvoices" let-i="index" > 
+          <tr>
+            <td id="invoicNumber" (click)="invoiceViewData(invoiceView)">
+              <a>{{invoice.invoiceNumber}}</a>
+            </td>
+            <td class="invoicedata">{{invoice.invoiceAmt}}</td>
+            <td class="invoicedata">{{invoice.vendor}}</td>
+            <td id="email">{{invoice.invoiceeEmail}}</td>
+            <td class="invoicedata">{{invoice.createdAt | date}}</td>
+            <td class="invoicedata">{{invoice.invoiceDueDate | date}}</td>
+            <td>
+            <button class="approveactionbutton actionbutton" (click)="approveInvoiceData(approve,invoice.invoiceNumber)">Approve</button>
+            <button class="rejectactionbutton actionbutton" (click)="rejectInvoiceData(reject,invoice.invoiceNumber)">Reject</button>
+            </td> 
+          </tr>
+        </ng-template> 
+       </table> <!-- Table end here -->
+    </div>
+    <div class="footer">
+        Copyright 2019. All Rights Reserved
+    </div>
+  </div>
+  <!-- Main container end here -->
+
+  <!-- Invoice  View popup start here -->
+  <ng-template #invoiceView  let-modal class="modal-content">
+      <div id="popupContainer">
+        <div class="modal-header">
+            <div class="row"> 
+                <h4 class="modal-title col-md-6 viewInvoiceHeader" id="modal-basic-title">Approve Invoice</h4>
+                <span class=" col-md-6">
+                  <button class="approveactionbutton  actionbutton">Approve</button>
+                  <button class="rejectactionbutton actionbutton">Reject</button>
+              </span>
+            </div>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <p>Invoice Details will display here.</p>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn  btn-outline-secondary  buttonHolder" (click)="modal.dismiss('Cross click')" >Cancel</button>
+        </div>
+
+      </div>
+    </ng-template>  <!-- End of Invoice popup  -->
+
+ <!-- Approve popup start here -->
+  <ng-template #approve  let-modal class="modal-content">
+      <div id="popupContainer">
+        <div class="modal-header popModalHeaderDiv" >
+            <span class="modal-title ApproveInvoiceHeader" id="modal-basic-title">Approve Invoice</span>
+            <button type="button" class="popCloseBtn" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          </button>
+        </div>
+
+        <div class="modal-body">
+            <img class="rightIcon" src="./assets/images/pendingInvoices/Approve1.png" >
+            <div class="invoiceMsg">Are you sure you want to Approve the invoice?</div>
+            <p class="invoiceNo"><b class="invoiceMsg" style="font-weight: 400">Invoice No</b>:(#{{currApproveInvNum}})</p>
+        </div>
+      <div  class="row  textareaDiv">
+          <textarea rows="4" column="1" class="invoiceTextArea"  placeholder="Enter comments here"></textarea>
+      </div>
+           
+      <div class="modal-footer  ">
+        <button type="button" class="btn  btn-outline-secondary" (click)="modal.dismiss('Cross click')" >Cancel</button>
+        <button type="button" class="btn okBtn"(click)="approveInvoice()">OK</button>
+      </div>
+      </div>
+    </ng-template>  
+  <!-- End of approve popup  -->
+
+  <!-- Reject popup start here -->
+  <ng-template #reject  let-modal class="modal-content">
+      <div id="popupContainer">
+        <div class="modal-header popModalHeaderDiv" >
+            <span class="modal-title RejectInvoiceHeader" id="modal-basic-title">Reject Invoice</span>
+            <button type="button" class="popCloseBtn" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          </button>
+        </div>
+
+        <div class="modal-body">
+            <img class="rejectIcon" src="./assets/images/pendingInvoices/Reject1.png" >
+            <div class="invoiceMsg">Are you sure you want to Reject the invoice?</div>
+            <p class="invoiceNo"><b class="invoiceMsg" style="font-weight: 400">Invoice No</b>:(#{{currRejectInvNum}})</p>
+        </div>
+      <div  class="row  textareaDiv">
+          <textarea required rows="4" column="1" class="invoiceTextArea"  placeholder="Enter comments here"></textarea>
+          <span class="mandatoryField">*</span>
+      </div>
+           
+      <div class="modal-footer  ">
+        <button type="button" class="btn cancelBtn" (click)="modal.dismiss('Cross click')" >Cancel</button>
+        <button type="button" class="btn okBtn"(click)="rejectInvoice()">OK</button>
+      </div>
+      </div>
+    </ng-template>  
+    <!-- End of Reject popup  -->
+  
 </div>

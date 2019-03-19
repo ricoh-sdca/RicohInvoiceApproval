@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  //baseUrl:"http://10.55.195.52:8090"
+  baseUrl:"http://localhost:8080/invoiceApproval-app"
+  //baseUrl:"http://10.55.195.83:8090"
+
 };
 
 /*
