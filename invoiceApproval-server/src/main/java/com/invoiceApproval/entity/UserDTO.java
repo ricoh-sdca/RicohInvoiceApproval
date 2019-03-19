@@ -4,10 +4,15 @@
 package com.invoiceApproval.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+/**
+ * @author atul_jadhav
+ *
+ */
 /**
  * @author atul_jadhav
  *
@@ -27,10 +32,18 @@ public class UserDTO implements Serializable {
 	@Size(max = 50, message = "{password.size}")
 	private String password;
 
-	private String name;
-
-	private String email;
-
+    private Integer id;
+    private String firstName;
+    private String lastName;
+    private String emailId;
+    private String approvalLevel;
+    private String userStatus;
+    private String createdBy;
+    private Date createdAt;
+	private String updatedBy;
+    private Date updatedAt;
+    private Integer orgId;
+	
 	public UserDTO() {
 		super();
 	}
@@ -65,33 +78,93 @@ public class UserDTO implements Serializable {
 		this.password = password;
 	}
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
+	public Integer getId() {
+		return id;
 	}
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	/**
-	 * @param email
-	 *            the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getEmailId() {
+		return emailId;
+	}
+
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+
+	public String getApprovalLevel() {
+		return approvalLevel;
+	}
+
+	public void setApprovalLevel(String approvalLevel) {
+		this.approvalLevel = approvalLevel;
+	}
+
+	public String getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(String userStatus) {
+		this.userStatus = userStatus;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	public Integer getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Integer orgId) {
+		this.orgId = orgId;
+	}
+
+	
 }

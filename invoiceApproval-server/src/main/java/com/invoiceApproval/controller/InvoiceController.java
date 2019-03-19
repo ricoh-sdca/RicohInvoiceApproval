@@ -10,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.invoiceApproval.Utils.Constants;
 import com.invoiceApproval.Utils.Messages;
@@ -22,10 +25,12 @@ import com.invoiceApproval.entity.Invoice;
 import com.invoiceApproval.entity.InvoiceDTO;
 import com.invoiceApproval.entity.ResponseVO;
 import com.invoiceApproval.entity.User;
+import com.invoiceApproval.entity.UserDTO;
 import com.invoiceApproval.exception.InvoiceApprovalException;
 import com.invoiceApproval.service.IUserService;
 import com.invoiceApproval.service.impl.InvoiceService;
 
+@SessionAttributes("user")
 @RestController
 @CrossOrigin(origins="http://localhost:4200")
 public class InvoiceController {
@@ -67,20 +72,20 @@ public class InvoiceController {
 	 * @return List
 	 */
 	@CrossOrigin(origins="http://localhost:4200")
-	@GetMapping(path="/invoices/{username}")
-	public ModelMap getAllPendingInvoices(@PathVariable(name="username") String userName)
+	@GetMapping("/invoices/{userName}/{invoiceStatus}")
+	public ModelMap getAllInvoicesByStatus(@PathVariable String userName,@PathVariable String invoiceStatus)
 	{
 		logger.info("calling getAllPendingInvoices() of InvoiceController");
  		try {
  			User user = userService.getUserByName(userName);
- 			List<InvoiceDTO> invoiceDtos = invoiceService.getAllInvoices(user.getApprovalLevel(),Constants.PENDING);
+ 			List<InvoiceDTO> invoiceDtos = invoiceService.getAllInvoices(user,invoiceStatus);
  			if(invoiceDtos != null)
  				return ResponseUtils.getModelMap(new ResponseVO(Constants.SUCCESS,null,null),invoiceDtos,Constants.INVOICEDETAILS);
  			else
- 				return ResponseUtils.getModelMap(new ResponseVO(Constants.SUCCESS,messages.get("invoice.noPending"),null),invoiceDtos,Constants.INVOICEDETAILS);
+ 				return ResponseUtils.getModelMap(new ResponseVO(Constants.FAILED,messages.get("invoice.noPending"),null),invoiceDtos,Constants.INVOICEDETAILS);
 		} catch (InvoiceApprovalException e) {
 			logger.error(messages.get("invoice.error"),e);
-			return ResponseUtils.getModelMap(new ResponseVO(Constants.FAILED,null,messages.get("common.error")+e.getErrorMessage()),null,Constants.INVOICEDETAILS);
+			return ResponseUtils.getModelMap(new ResponseVO(Constants.FAILED,null,e.getErrorMessage()),null,Constants.INVOICEDETAILS);
 		}
 	}
 	

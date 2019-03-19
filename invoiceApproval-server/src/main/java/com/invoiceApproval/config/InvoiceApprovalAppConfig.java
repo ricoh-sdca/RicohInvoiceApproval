@@ -18,6 +18,10 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 @Configuration
 public class InvoiceApprovalAppConfig {
 
+	/**
+	 *  This method for resolving messages, with support for the parameterization and internationalization of such messages. 
+	 * @return MessageSource
+	 */
 	@Bean
 	public MessageSource messageSource()
 	{
@@ -27,6 +31,11 @@ public class InvoiceApprovalAppConfig {
 		return messageSource;
 	}
 	
+	/**
+	 * This is the central class for validation (JSR-303) setup in a Spring application context: 
+	 * It bootstraps a ValidationFactory and exposes it through the Spring validation.
+	 * @return
+	 */
 	@Bean
 	public LocalValidatorFactoryBean getValidator()
 	{

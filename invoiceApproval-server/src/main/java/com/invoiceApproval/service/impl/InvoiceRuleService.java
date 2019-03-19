@@ -37,6 +37,7 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 	
 	/**
      * This method is used for fetching all RULES 
+	 * @param orgId 
      * @return
      */
 	@Override
@@ -224,6 +225,13 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 		return invoiceService.isAllInvoicesProcessed(orgId,invoiceStatus);
 	}
 
+	/**
+	 * This method checks, Is active rule already exists into database ?
+	 * @param id
+	 * @param invoiceRuleDTO
+	 * @return InvoiceRule
+	 * @throws InvoiceApprovalException
+	 */
 	public InvoiceRule isRuleExists(Integer id,InvoiceRuleDTO invoiceRuleDTO) throws InvoiceApprovalException {
 		logger.info("Enter isRuleExists() of InvoiceRuleService");
 		try {
@@ -237,8 +245,15 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 			throw new InvoiceApprovalException(e.getMessage());
 		}
 	}
+	
+	/**
+	 * This method validate all mandatory fields while creating new Rule.
+	 * @param invoiceRuleDTO
+	 * @throws InvoiceApprovalException
+	 */
 	public void validateInvoiceRule(InvoiceRuleDTO invoiceRuleDTO) throws InvoiceApprovalException
 	{
+		//validating mandatory fields
 		if(invoiceRuleDTO.getOrgId() == null || "".equals(invoiceRuleDTO.getOrgId()+""))
 			throw new InvoiceApprovalException(messages.get("rule.orgId"));
 		else if(invoiceRuleDTO.getRule()== null)
@@ -251,6 +266,7 @@ public class InvoiceRuleService implements IInvoiceRuleService  {
 			throw new InvoiceApprovalException(messages.get("rule.status"));
 		else if (invoiceRuleDTO.getRule().getRuleDetails() != null) 
 		{
+			//Validating Rule Details
 			List<RuleDetails> ruleDetails = invoiceRuleDTO.getRule().getRuleDetails(); 
 			for (RuleDetails ruleDetail : ruleDetails) {
 				

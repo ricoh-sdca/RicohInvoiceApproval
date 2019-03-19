@@ -27,7 +27,7 @@ public class InvoiceExceptionHandler {
 	 * This method handle method parameter validation exceptions.
 	 * 
 	 * @param ex
-	 * @return ErrorDetails
+	 * @return ResponseVO
 	 */
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
@@ -36,23 +36,22 @@ public class InvoiceExceptionHandler {
 		logger.info("Enter InvoiceExceptionHandler handleMethodArgumentNotValid()");
 		ResponseVO errorDetails = new ResponseVO();
 		errorDetails.setCode(Constants.FAILED);
-		errorDetails.setMessage(null);
+		errorDetails.setMessage("Exception in application");
 		errorDetails.setErrorMessage(ex.getBindingResult().getFieldError().getDefaultMessage());
 		return errorDetails;
 	}
 	
 	/**
-	 * 
-	 * This method handle exception if user is not found.
+	 * This method create error response to user, if any exception occurred during application execution.
 	 * @param ex
-	 * @return ErrorDetails
+	 * @return ResponseVO
 	 */
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(InvoiceApprovalException.class)
 	public ResponseVO invoiceApprovalException(InvoiceApprovalException ex)
 	{
-		logger.info("Enter InvoiceExceptionHandler handleMethodArgumentNotValid()");
+		logger.info("Enter InvoiceExceptionHandler invoiceApprovalException()");
 		ResponseVO errorDetails = new ResponseVO();
 		errorDetails.setCode(Constants.FAILED);
 		errorDetails.setMessage("Exception in application");

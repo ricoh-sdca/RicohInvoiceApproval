@@ -112,16 +112,16 @@ public class InvoiceService implements IInvoiceService {
 	}
 	
 	/**
-	 * This method returns all pending invoices of a login user.
+	 * This method returns all invoices based on user and invoice status.
 	 * @return List
 	 * @param String 
 	 */
 	@Override
-	public List<InvoiceDTO> getAllInvoices(String approvalLevel,String invoiceStatus) throws InvoiceApprovalException {
+	public List<InvoiceDTO> getAllInvoices(User user,String invoiceStatus) throws InvoiceApprovalException {
 		logger.info("Enter getUserPendingInvoices() of InvoiceService");
 		List<InvoiceDTO> dtosList = null;
 		try {
-			List<Invoice> invoiceList = invoiceDao.getAllInvoices(approvalLevel,invoiceStatus);
+			List<Invoice> invoiceList = invoiceDao.getAllInvoices(user,invoiceStatus);
 			if(invoiceList != null && invoiceList.size() > 0) {
 				dtosList = new LinkedList<>();
 				for (Invoice invoice : invoiceList) {

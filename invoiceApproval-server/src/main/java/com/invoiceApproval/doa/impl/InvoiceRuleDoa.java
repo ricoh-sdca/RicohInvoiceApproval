@@ -37,6 +37,7 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 	
 	/**
 	 * This method is use to get all rules of an organization.
+	 * @param orgId 
 	 */
 	@Override
 	public List<InvoiceRule> findAllRules() throws Exception {
@@ -90,11 +91,12 @@ public class InvoiceRuleDoa implements IInvoiceRuleDoa {
 	}
 
 	@Override
-	public InvoiceRule findAllRulesByOrgId(Integer orgId) throws Exception {
+	public InvoiceRule findAllRulesByOrgId(Integer orgId) throws InvoiceApprovalException {
+		logger.info("Calling findAllRulesByOrgId() of InvoiceRuleDoa ");
 		try {
-			String hql = "FROM InvoiceRule as ipr WHERE ipr.organization.orgId = :orgId and ipr.ruleStatus='"+Constants.ACTIVE+"'";
-			InvoiceRule invoiceApprovalObj = (InvoiceRule)entityManager.createQuery(hql).setParameter("orgId", orgId)
-			              .getSingleResult();
+			String hql = "FROM InvoiceRule as ipr WHERE ipr.organization.orgId = :orgId and ipr.ruleStatus=:ruleStatus and ipr.organization.status=:orgStatus";
+			InvoiceRule invoiceApprovalObj = (InvoiceRule)entityManager.createQuery(hql).setParameter("orgId", orgId).
+					setParameter("orgStatus", Constants.ACTIVE).setParameter("ruleStatus",Constants.ACTIVE).getSingleResult();
 			return invoiceApprovalObj;
 		} catch (NoResultException e) {
 			logger.error("An exception occured in findAllRulesByOrgId >>",messages.get("rule.notFound"));

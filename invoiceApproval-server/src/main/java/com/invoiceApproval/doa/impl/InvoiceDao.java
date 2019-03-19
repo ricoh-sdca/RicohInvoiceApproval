@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.invoiceApproval.Utils.Constants;
 import com.invoiceApproval.doa.IInvoiceDao;
 import com.invoiceApproval.entity.Invoice;
+import com.invoiceApproval.entity.User;
 import com.invoiceApproval.repository.InvoiceRepository;
 
 @Repository
@@ -49,21 +50,25 @@ public class InvoiceDao implements IInvoiceDao {
 		return repository.save(invoice);
 	}
 
+	/** 
+	 * This method returns all pending invoices based on login user
+	 * @return List
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Invoice> getAllInvoices(String approvalLevel,String invoiceStatus) {
-		String query = "select i from Invoice i , User u where ";
-				if(approvalLevel != null ) {
-					query += "i.organization.orgId = u.organization.orgId and u.approvalLevel ='"+approvalLevel+"' and u.userStatus='"+Constants.ACTIVE+"' "
-							+ "and i.currApprovalLevel = u.approvalLevel and ";
+	public List<Invoice> getAllInvoices(User user,String invoiceStatus) {
+		StringBuffer query = new StringBuffer("select distinct i from Invoice i , User u where ");
+				if(!"".equals(user.getApprovalLevel()) && user.getApprovalLevel() != null) {
+					query.append("i.organization.orgId = '"+user.getOrganization().getOrgId()+"' and u.approvalLevel ='"+user.getApprovalLevel()+"' and u.userStatus='"+Constants.ACTIVE+"' ");
+					query.append("and i.currApprovalLevel = '"+user.getApprovalLevel()+"' and ");
 				}else {
-					query +="i.organization.orgId = u.organization.orgId and u.userStatus='"+Constants.ACTIVE+"' and ";
-				}if(invoiceStatus != null) {
-					query +="i.invoiceStatus='"+invoiceStatus+"' order by i.createdAt asc";
+					query.append("i.organization.orgId = '"+user.getOrganization().getOrgId()+"' and u.userStatus='"+Constants.ACTIVE+"' and ");
+				}if(!"".equals(invoiceStatus) && invoiceStatus != null && !invoiceStatus.equals("all")) {
+					query.append("i.invoiceStatus='"+invoiceStatus+"' order by i.createdAt asc");
 				}else {
-					query +="1=1 order by i.createdAt asc";
+					query.append("1=1 order by i.createdAt asc");
 				}
-		 return manager.createQuery(query).getResultList()	;
+		 return manager.createQuery(query.toString()).getResultList();
 	}
 
 	@Override

@@ -51,8 +51,9 @@ public class InvoiceRuleController {
      * This method is used for fetching all RULES 
      * @return
      */
-    @GetMapping(path="/rules",produces="application/json")
-    public ModelMap findAll() {
+    //@GetMapping(path="/rules",produces="application/json")
+    //NOT IN USE NOW KEPT FOR REFERENCE.
+    public ModelMap findAll(@PathVariable Integer orgId) {
     	logger.info("Calling ");
     	ResponseVO responseVO = null;
     	try {
@@ -76,24 +77,29 @@ public class InvoiceRuleController {
      * This method is used for fetching all RULES based on orgId
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @CrossOrigin(origins="http://localhost:4200")
 	@GetMapping(path="/rules/orgId/{orgId}")
-    public Iterable<InvoiceRuleDTO> findAllRulesByOrgId(@PathVariable("orgId") Integer orgId) {
+    public ModelMap findAllRulesByOrgId(@PathVariable("orgId") Integer orgId) {
     	logger.info("Calling ");
+    	ResponseVO responseVO = null;
     	try {
     		List<InvoiceRuleDTO> list = new ArrayList<>();
-    		List<InvoiceRule> invoiceRuleList = (List<InvoiceRule>) invoiceRuleService.findAllRulesByOrgId(orgId);
-    		if(invoiceRuleList != null && !invoiceRuleList.isEmpty())
+    		InvoiceRule invoiceRule = invoiceRuleService.findAllRulesByOrgId(orgId);
+    		if(invoiceRule != null)
     		{
-    			for (InvoiceRule invoiceRule : invoiceRuleList) {
-    				list.add(new InvoiceRuleDTO().wrapToInvoiceRuleDTO(invoiceRule));
-				}
-    			return list;
+    			list.add(new InvoiceRuleDTO().wrapToInvoiceRuleDTO(invoiceRule));
+    			responseVO = new ResponseVO(Constants.SUCCESS,null, null);
+    			return ResponseUtils.getModelMap(responseVO, list,Constants.RULEDETAILS);
+    		}
+    		else {
+    			responseVO = new ResponseVO(Constants.FAILED,null, messages.get("rule.get.failed"));
+    			return ResponseUtils.getModelMap(responseVO, null,Constants.RULEDETAILS);
     		}
 		} catch (Exception e) {
-			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> findAll ",e.getCause());
+			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> findAll ",e);
+			responseVO = new ResponseVO(Constants.FAILED,null, messages.get("rule.get.failed"));
+			return ResponseUtils.getModelMap(responseVO, null,Constants.RULEDETAILS);
 		}
-		return null;
     }
     
     /**
@@ -123,6 +129,16 @@ public class InvoiceRuleController {
     	ResponseVO responseVO = null;
     	try {
     		invoiceRuleService.validateInvoiceRule(invoiceRuleDTO);
+    		try {
+    			InvoiceRule activeRule = invoiceRuleService.findAllRulesByOrgId(invoiceRuleDTO.getOrgId());
+    			if(activeRule != null)
+    				throw new InvoiceApprovalException(messages.get("rule.noUnique"));
+			} catch (InvoiceApprovalException e) {
+				if(e.getMessage().equals(messages.get("rule.noUnique"))) {
+					throw new InvoiceApprovalException(messages.get("rule.noUnique"));
+				}
+			}
+    		
     		InvoiceRule invoiceRule = invoiceRuleDTO.wrapper(invoiceRuleDTO);
     		invoiceRule = invoiceRuleService.create(invoiceRule);
     		if(null != invoiceRule) {
@@ -132,11 +148,14 @@ public class InvoiceRuleController {
     			responseVO = new ResponseVO(Constants.FAILED, null,messages.get("rule.invalid"));
     			return ResponseUtils.getModelMap(responseVO,null,Constants.RULEDETAILS);
     		}
+		 } catch (InvoiceApprovalException ex) {
+			responseVO = new ResponseVO(Constants.FAILED, null,ex.getErrorMessage());
+			return ResponseUtils.getModelMap(responseVO,null,Constants.RULEDETAILS);
 		} catch (Exception e) {
 			logger.error("An exception occured while executing REST call >> InvoiceApprovalRule >> create ",e);
-			responseVO = new ResponseVO(Constants.FAILED, null,messages.get("rule.error")+e.getMessage());
+			responseVO = new ResponseVO(Constants.FAILED, null,messages.get("rule.error"));
 			return ResponseUtils.getModelMap(responseVO,null,Constants.RULEDETAILS);
-		}
+		} 
     }
 
     /**
